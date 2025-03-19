@@ -7,13 +7,13 @@
 class Bot
 {
  public:
-  Bot(const std::string& token, handlers::MessageHandler mh):
+  Bot(const std::string& token, handlers::Handler mh):
     token_(token),
     mh_(&mh)
   {}
  private:
   std::string token_;
-  handlers::MessageHandler* mh_;
+  handlers::Handler* mh_;
 };
 
 #endif

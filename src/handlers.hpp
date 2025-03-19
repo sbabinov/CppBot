@@ -10,13 +10,22 @@ namespace handlers
 {
   class MessageHandler
   {
-  public:
+    using handler_t = std::function< void(const types::Message&) >;
+   public:
     MessageHandler():
       cmds_()
     {}
-    void addHandler(const std::string& cmd, std::function< void(const types::Message&) > handler);
-  private:
+    virtual void addHandler(const std::string& cmd, handler_t handler) {};
+   private:
     std::unordered_map< std::string, std::function< void(const types::Message&) > > cmds_;
+  };
+
+  class Handler: public MessageHandler
+  {
+   public:
+    Handler():
+      MessageHandler()
+    {}
   };
 }
 
