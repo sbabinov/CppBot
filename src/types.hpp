@@ -1,12 +1,19 @@
+#ifndef TYPES_HPP
+#define TYPES_HPP
+
+#include <nlohmann/json.hpp>
+
 namespace types
 {
   class Message
   {
    public:
-    Message(int chatId):
-      chatId_(chatId)
+    explicit Message(nlohmann::json data):
+      chatId_(0)
     {}
    private:
     int chatId_;
   };
 }
+
+#endif

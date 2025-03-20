@@ -10,6 +10,6 @@ else()
     message(FATAL_ERROR "OpenSSL not found!")
 endif()
 
-add_executable(main main.cpp)
+add_executable(main main.cpp src/bot.cpp)
 
 target_link_libraries(main PRIVATE OpenSSL::SSL OpenSSL::Crypto)
