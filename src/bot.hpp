@@ -23,6 +23,8 @@ namespace cppbot
   {
    public:
     Bot(const std::string& token, handlers::Handler mh);
+    void start();
+    void stop();
    private:
     std::string token_;
     handlers::Handler* mh_;
@@ -36,7 +38,7 @@ namespace cppbot
 
     void runIoContext();
     void fetchUpdates();
-    // void processMessagesAsync();
+    void processMessagesAsync();
     // void sendMessageAsync(const std::string& chatId, const std::string& text);
   };
 }

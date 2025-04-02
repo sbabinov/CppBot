@@ -14,6 +14,21 @@ cppbot::Bot::Bot(const std::string& token, handlers::Handler mh):
   sslContext_.set_default_verify_paths();
 }
 
+void cppbot::Bot::start() {
+  isRunning_ = true;
+  ioThread_ = std::thread(&cppbot::Bot::runIoContext, this);
+  std::thread([this] { fetchUpdates(); }).detach();
+  processMessagesAsync();
+}
+
+void cppbot::Bot::stop() {
+    isRunning_ = false;
+    ioContext_.stop();
+    if (ioThread_.joinable()) {
+        ioThread_.join();
+    }
+}
+
 void cppbot::Bot::runIoContext()
 {
   asio::executor_work_guard< asio::io_context::executor_type > work = asio::make_work_guard(ioContext_);
@@ -68,6 +83,20 @@ void cppbot::Bot::fetchUpdates()
       std::cerr << "Error: " << e.what() << std::endl;
     }
 
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+  }
+}
+
+void cppbot::Bot::processMessagesAsync()
+{
+  while (isRunning_)
+  {
+    std::unique_lock<std::mutex> lock(queueMutex_);
+    queueCondition_.wait(lock, [this] { return !messageQueue_.empty(); });
+    types::Message message = messageQueue_.front();
+    messageQueue_.pop();
+    lock.unlock();
+
+    std::cout << "Received: " << message.text << std::endl;
   }
 }
