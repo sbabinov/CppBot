@@ -33,8 +33,8 @@ namespace types
   struct Message
   {
     size_t id;
-    User* from;
-    Chat* chat;
+    User from;
+    Chat chat;
   };
   void to_json(json& j, const Message& msg);
   void from_json(const json& j, Message& msg);

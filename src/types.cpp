@@ -17,8 +17,14 @@ void types::from_json(const json& j, types::User& user)
 {
   j.at("id").get_to(user.id);
   j.at("first_name").get_to(user.firstName);
-  j.at("last_name").get_to(user.lastName);
-  j.at("username").get_to(user.username);
+  if (j.contains("last_name"))
+  {
+    j.at("last_name").get_to(user.lastName);
+  }
+  if (j.contains("username"))
+  {
+    j.at("username").get_to(user.username);
+  }
 }
 
 // Chat
@@ -55,10 +61,10 @@ void types::to_json(json& j, const types::Message& msg)
 {
   json from;
   json chat;
-  to_json(from, *(msg.from));
-  to_json(chat, *(msg.chat));
+  to_json(from, msg.from);
+  to_json(chat, msg.chat);
   j = json{
-    {"id", msg.id},
+    {"message_id", msg.id},
     {"from", from},
     {"chat", chat}
   };
@@ -66,7 +72,7 @@ void types::to_json(json& j, const types::Message& msg)
 
 void types::from_json(const json& j, types::Message& msg)
 {
-  from_json(j.at("from"), *(msg.from));
-  from_json(j.at("chat"), *(msg.chat));
+  from_json(j.at("from"), msg.from);
+  from_json(j.at("chat"), msg.chat);
   j.at("message_id").get_to(msg.id);
 }
