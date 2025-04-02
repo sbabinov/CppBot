@@ -66,13 +66,18 @@ void types::to_json(json& j, const types::Message& msg)
   j = json{
     {"message_id", msg.id},
     {"from", from},
-    {"chat", chat}
+    {"chat", chat},
+    {"text", msg.text}
   };
 }
 
 void types::from_json(const json& j, types::Message& msg)
 {
+  j.at("message_id").get_to(msg.id);
   from_json(j.at("from"), msg.from);
   from_json(j.at("chat"), msg.chat);
-  j.at("message_id").get_to(msg.id);
+  if (j.contains("text"))
+  {
+    j.at("text").get_to(msg.text);
+  }
 }

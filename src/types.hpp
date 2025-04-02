@@ -35,6 +35,7 @@ namespace types
     size_t id;
     User from;
     Chat chat;
+    std::string text;
   };
   void to_json(json& j, const Message& msg);
   void from_json(const json& j, Message& msg);
