@@ -35,10 +35,7 @@ void bot::Bot::fetchUpdates()
     {
       if (!SSL_set_tlsext_host_name(socket.native_handle(), host.c_str()))
       {
-        throw boost::system::system_error(
-          ::ERR_get_error(),
-          asio::error::get_ssl_category()
-        );
+        throw boost::system::system_error(::ERR_get_error(), asio::error::get_ssl_category());
       }
 
       auto const results = resolver.resolve(host, "443");
@@ -55,17 +52,19 @@ void bot::Bot::fetchUpdates()
       http::response< http::string_body > res;
       http::read(socket, buffer, res);
       auto updates = nlohmann::json::parse(res.body());
-      for (const auto& update : updates["result"]) {
+      for (auto& update : updates["result"])
+      {
         lastUpdateId = update["update_id"];
         if (update.contains("message"))
         {
           std::lock_guard< std::mutex > lock(queueMutex_);
-          messageQueue_.push(types::Message(update["message"]));
+          messageQueue_.push(update.at("message").template get< types::Message >());
           queueCondition_.notify_one();
         }
       }
     }
-    catch (std::exception const& e) {
+    catch (std::exception const& e)
+    {
       std::cerr << "Error: " << e.what() << std::endl;
     }
 
