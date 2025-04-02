@@ -6,7 +6,7 @@ namespace asio = boost::asio;
 namespace beast = boost::beast;
 namespace http = beast::http;
 
-bot::Bot::Bot(const std::string& token, handlers::Handler mh):
+cppbot::Bot::Bot(const std::string& token, handlers::Handler mh):
   token_(token),
   mh_(&mh),
   sslContext_(asio::ssl::context::tlsv12_client)
@@ -14,13 +14,13 @@ bot::Bot::Bot(const std::string& token, handlers::Handler mh):
   sslContext_.set_default_verify_paths();
 }
 
-void bot::Bot::runIoContext()
+void cppbot::Bot::runIoContext()
 {
   asio::executor_work_guard< asio::io_context::executor_type > work = asio::make_work_guard(ioContext_);
   ioContext_.run();
 }
 
-void bot::Bot::fetchUpdates()
+void cppbot::Bot::fetchUpdates()
 {
   std::size_t lastUpdateId = 0;
   while (isRunning_)

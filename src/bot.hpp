@@ -17,7 +17,7 @@
 
 namespace asio = boost::asio;
 
-namespace bot
+namespace cppbot
 {
   class Bot
   {
