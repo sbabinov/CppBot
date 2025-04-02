@@ -52,13 +52,13 @@ void bot::Bot::fetchUpdates()
       http::response< http::string_body > res;
       http::read(socket, buffer, res);
       auto updates = nlohmann::json::parse(res.body());
-      for (auto& update : updates["result"])
+      for (const auto& update : updates["result"])
       {
         lastUpdateId = update["update_id"];
         if (update.contains("message"))
         {
           std::lock_guard< std::mutex > lock(queueMutex_);
-          messageQueue_.push(update.at("message").template get< types::Message >());
+          messageQueue_.push(update["message"].template get< types::Message >());
           queueCondition_.notify_one();
         }
       }
