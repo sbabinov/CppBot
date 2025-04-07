@@ -6,6 +6,7 @@
 #include <queue>
 #include <mutex>
 #include <condition_variable>
+#include <memory>
 
 #include <nlohmann/json.hpp>
 #include <boost/asio/ssl.hpp>
@@ -22,12 +23,12 @@ namespace cppbot
   class Bot
   {
    public:
-    Bot(const std::string& token, handlers::Handler mh);
+    Bot(const std::string& token, std::shared_ptr< handlers::MessageHandler > mh);
     void start();
     void stop();
    private:
     std::string token_;
-    handlers::Handler* mh_;
+    std::shared_ptr< handlers::MessageHandler > mh_;
     asio::io_context ioContext_;
     std::thread ioThread_;
     std::queue< types::Message > messageQueue_;
