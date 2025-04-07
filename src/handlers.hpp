@@ -14,6 +14,7 @@ namespace handlers
    public:
     MessageHandler();
     void addHandler(const std::string& cmd, handler_t handler);
+    void processMessage(const types::Message& msg) const;
    private:
     std::unordered_map< std::string, std::function< void(const types::Message&) > > cmds_;
   };
