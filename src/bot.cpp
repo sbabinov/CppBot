@@ -93,10 +93,10 @@ void cppbot::Bot::processMessagesAsync()
   {
     std::unique_lock<std::mutex> lock(queueMutex_);
     queueCondition_.wait(lock, [this] { return !messageQueue_.empty(); });
-    types::Message message = messageQueue_.front();
+    types::Message msg = messageQueue_.front();
     messageQueue_.pop();
     lock.unlock();
 
-    std::cout << "Received: " << message.text << std::endl;
+    (*mh_).processMessage(msg);
   }
 }
