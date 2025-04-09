@@ -1,5 +1,6 @@
 #include "bot.hpp"
 #include <iostream>
+#include <functional>
 #include "types.hpp"
 
 namespace asio = boost::asio;
@@ -14,17 +15,20 @@ cppbot::Bot::Bot(const std::string& token, std::shared_ptr< handlers::MessageHan
   sslContext_.set_default_verify_paths();
 }
 
-void cppbot::Bot::start() {
+void cppbot::Bot::start()
+{
   isRunning_ = true;
   ioThread_ = std::thread(&cppbot::Bot::runIoContext, this);
-  std::thread([this] { fetchUpdates(); }).detach();
+  std::thread(std::bind(&cppbot::Bot::fetchUpdates, this)).detach();
   processMessagesAsync();
 }
 
-void cppbot::Bot::stop() {
+void cppbot::Bot::stop()
+{
     isRunning_ = false;
     ioContext_.stop();
-    if (ioThread_.joinable()) {
+    if (ioThread_.joinable())
+    {
         ioThread_.join();
     }
 }
@@ -44,7 +48,7 @@ void cppbot::Bot::fetchUpdates()
     std::string path = "/bot" + token_ + "/getUpdates?offset=" + std::to_string(lastUpdateId + 1);
 
     asio::ip::tcp::resolver resolver(ioContext_);
-    asio::ssl::stream<asio::ip::tcp::socket> socket(ioContext_, sslContext_);
+    asio::ssl::stream< asio::ip::tcp::socket > socket(ioContext_, sslContext_);
 
     try
     {
@@ -91,8 +95,11 @@ void cppbot::Bot::processMessagesAsync()
 {
   while (isRunning_)
   {
-    std::unique_lock<std::mutex> lock(queueMutex_);
-    queueCondition_.wait(lock, [this] { return !messageQueue_.empty(); });
+    std::unique_lock< std::mutex > lock(queueMutex_);
+    queueCondition_.wait(lock, [this]
+    {
+      return !messageQueue_.empty();
+    });
     types::Message msg = messageQueue_.front();
     messageQueue_.pop();
     lock.unlock();
