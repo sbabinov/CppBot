@@ -26,6 +26,7 @@ namespace cppbot
     Bot(const std::string& token, std::shared_ptr< handlers::MessageHandler > mh);
     void start();
     void stop();
+    types::Message sendMessage(size_t chatId, const std::string& text);
    private:
     std::string token_;
     std::shared_ptr< handlers::MessageHandler > mh_;
@@ -40,7 +41,6 @@ namespace cppbot
     void runIoContext();
     void fetchUpdates();
     void processMessagesAsync();
-    // void sendMessageAsync(const std::string& chatId, const std::string& text);
   };
 }
 

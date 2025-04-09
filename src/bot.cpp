@@ -1,6 +1,8 @@
 #include "bot.hpp"
 #include <iostream>
 #include <functional>
+#include <future>
+#include <utility>
 #include "types.hpp"
 
 namespace asio = boost::asio;
@@ -21,6 +23,58 @@ void cppbot::Bot::start()
   ioThread_ = std::thread(&cppbot::Bot::runIoContext, this);
   std::thread(std::bind(&cppbot::Bot::fetchUpdates, this)).detach();
   processMessagesAsync();
+}
+
+types::Message cppbot::Bot::sendMessage(size_t chatId, const std::string& text)
+{
+  std::promise< types::Message > promise;
+  std::future< types::Message > msg = promise.get_future();
+  asio::post(ioContext_, [this, chatId, &text, &promise]
+  {
+    std::string host = "api.telegram.org";
+    std::string path = "/bot" + token_ + "/sendMessage";
+    nlohmann::json body = {
+      {"chat_id", chatId},
+      {"text", text}
+    };
+
+    asio::ip::tcp::resolver resolver(ioContext_);
+    asio::ssl::stream< asio::ip::tcp::socket > socket(ioContext_, sslContext_);
+
+    try
+    {
+      if (!SSL_set_tlsext_host_name(socket.native_handle(), host.c_str()))
+      {
+        throw boost::system::system_error(::ERR_get_error(), asio::error::get_ssl_category());
+      }
+
+      auto const results = resolver.resolve(host, "443");
+      asio::connect(socket.next_layer(), results.begin(), results.end());
+
+      socket.handshake(asio::ssl::stream_base::client);
+
+      http::request< http::string_body > req{http::verb::post, path, 11};
+      req.set(http::field::host, host);
+      req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+      req.set(http::field::content_type, "application/json");
+      req.body() = body.dump();
+      req.prepare_payload();
+
+      http::write(socket, req);
+
+      beast::flat_buffer buffer;
+      http::response< http::string_body > res;
+      http::read(socket, buffer, res);
+
+      promise.set_value(nlohmann::json::parse(res.body())["result"].template get< types::Message >());
+    }
+    catch (std::exception const& e)
+    {
+      std::cerr << "Error: " << e.what() << std::endl;
+      promise.set_value(types::Message());
+    }
+  });
+  return msg.get();
 }
 
 void cppbot::Bot::stop()
