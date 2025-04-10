@@ -12,12 +12,24 @@ std::string fetchCommand(const types::Message& msg)
 }
 
 handlers::MessageHandler::MessageHandler():
-  cmds_()
+  cmds_(),
+  states_(),
+  stateCmds_()
 {}
 
 void handlers::MessageHandler::addHandler(const std::string& cmd, handler_t handler)
 {
   cmds_[cmd] = handler;
+}
+
+void handlers::MessageHandler::addHandler(const state::State& state, handler_t handler)
+{
+  states_[state] = handler;
+}
+
+void handlers::MessageHandler::addHandler(const std::string& cmd, const state::State& state, handler_t handler)
+{
+  stateCmds_[{cmd, state}] = handler;
 }
 
 void handlers::MessageHandler::processMessage(const types::Message& msg) const
