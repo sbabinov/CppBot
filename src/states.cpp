@@ -1,4 +1,9 @@
-#include "state.hpp"
+#include "states.hpp"
+
+bool states::State::operator==(const states::State& other) const
+{
+  return this == &other;
+}
 
 states::StateMachine::StateMachine(Storage* storage):
   storage_(storage)

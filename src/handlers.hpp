@@ -7,23 +7,36 @@
 #include <unordered_map>
 #include <utility>
 #include "types.hpp"
-#include "state.hpp"
+#include "states.hpp"
 
 namespace handlers
 {
+  namespace detail
+  {
+    struct PairHasher
+    {
+      size_t operator()(const std::pair< std::string, states::State >& p) const
+      {
+        size_t h1 = std::hash< std::string >{}(p.first);
+        size_t h2 = std::hash< states::State >{}(p.second);
+        return h1 ^ (h2 << 1);
+      }
+    };
+  }
+
   class MessageHandler
   {
     using handler_t = std::function< void(const types::Message&) >;
    public:
-    MessageHandler();
+    MessageHandler() = default;
     void addHandler(const std::string& cmd, handler_t handler);
-    void addHandler(const state::State& state, handler_t handler);
-    void addHandler(const std::string& cmd, const state::State& state, handler_t handler);
+    void addHandler(const states::State& state, handler_t handler);
+    void addHandler(const std::string& cmd, const states::State& state, handler_t handler);
     void processMessage(const types::Message& msg) const;
    private:
-    std::unordered_map< std::string, handler_t > cmds_;
-    std::unordered_map< state::State, handler_t > states_;
-    std::unordered_map< std::pair< std::string, state::State >, handler_t > stateCmds_;
+    std::unordered_map< std::string, handler_t > cmdHandlers_;
+    std::unordered_map< states::State, handler_t > stateHandlers_;
+    std::unordered_map< std::pair< std::string, states::State >, handler_t, detail::PairHasher > stateCmdHandlers_;
   };
 }
 

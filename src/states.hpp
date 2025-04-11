@@ -7,7 +7,10 @@
 namespace states
 {
   class State
-  {};
+  {
+   public:
+    bool operator==(const State& other) const;
+  };
 
   class StatesForm
   {
@@ -62,7 +65,7 @@ namespace std
   template<>
   struct hash< states::State >
   {
-    size_t operator()(const states::State &obj) const
+    size_t operator()(const states::State& obj) const
     {
       return hash< const states::State* >()(&obj);
     }
