@@ -51,7 +51,7 @@ void states::StateContext::setState(const states::State& state)
 
 void states::StateContext::resetState()
 {
-  stateMachine_->storage_->currentStates_[chatId_] = stateMachine_->defaultState_;
+  stateMachine_->storage_->currentStates_[chatId_] = states::DEFAULT_STATE;
 }
 
 states::StatesForm::Data states::StateContext::getData()

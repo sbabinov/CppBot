@@ -12,6 +12,8 @@ namespace states
     bool operator==(const State& other) const;
   };
 
+  const State DEFAULT_STATE{};
+
   class StatesForm
   {
    public:
@@ -42,7 +44,6 @@ namespace states
     void setState(size_t chatId, const State& state);
     State getState(size_t chatId);
    private:
-    static State defaultState_;
     Storage* storage_;
   };
 

@@ -26,7 +26,7 @@ void handlers::MessageHandler::addHandler(const std::string& cmd, const states::
   stateCmdHandlers_[{cmd, state}] = handler;
 }
 
-void handlers::MessageHandler::processMessage(const types::Message& msg) const
+void handlers::MessageHandler::processMessage(const types::Message& msg, const states::State& state) const
 {
   try
   {
