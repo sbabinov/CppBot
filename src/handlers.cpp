@@ -16,12 +16,12 @@ void handlers::MessageHandler::addHandler(const std::string& cmd, handler_t hand
   cmdHandlers_[cmd] = handler;
 }
 
-void handlers::MessageHandler::addHandler(const states::State& state, handler_t handler)
+void handlers::MessageHandler::addHandler(const states::State& state, state_handler_t handler)
 {
   stateHandlers_[state] = handler;
 }
 
-void handlers::MessageHandler::addHandler(const std::string& cmd, const states::State& state, handler_t handler)
+void handlers::MessageHandler::addHandler(const std::string& cmd, const states::State& state, state_handler_t handler)
 {
   stateCmdHandlers_[{cmd, state}] = handler;
 }
