@@ -15,6 +15,7 @@ void states::StateMachine::setState(size_t chatId, const State& state)
 }
 
 states::Storage::Storage():
+  currentStates_(),
   data_()
 {}
 
