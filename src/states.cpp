@@ -1,17 +1,28 @@
 #include "states.hpp"
 
+states::State::State():
+  id_(lastId_++)
+{}
+
 bool states::State::operator==(const states::State& other) const
 {
-  return this == &other;
+  return this->id_ == other.id_;
 }
 
 states::StateMachine::StateMachine(Storage* storage):
   storage_(storage)
 {}
 
-states::State states::StateMachine::getState(size_t chatId)
+states::State states::StateMachine::getState(size_t chatId) const
 {
-  return storage_->currentStates_[chatId];
+  try
+  {
+    return storage_->currentStates_.at(chatId);
+  }
+  catch(const std::out_of_range&)
+  {
+    return states::DEFAULT_STATE;
+  }
 }
 
 void states::StateMachine::setState(size_t chatId, const State& state)
@@ -24,12 +35,12 @@ states::Storage::Storage():
   data_()
 {}
 
-boost::any states::Storage::getData(size_t chatId, const states::State& state)
+boost::any& states::Storage::data(size_t chatId, const states::State& state)
 {
   return data_[chatId][state];
 }
 
-states::StatesForm::Data states::Storage::getData(size_t chatId)
+states::StatesForm::Data& states::Storage::data(size_t chatId)
 {
   return data_[chatId];
 }
@@ -44,6 +55,11 @@ states::StateContext::StateContext(size_t chatId, states::StateMachine* stateMac
   stateMachine_(stateMachine)
 {}
 
+states::State states::StateContext::current()
+{
+  return stateMachine_->getState(chatId_);
+}
+
 void states::StateContext::setState(const states::State& state)
 {
   stateMachine_->storage_->currentStates_[chatId_] = state;
@@ -54,12 +70,12 @@ void states::StateContext::resetState()
   stateMachine_->storage_->currentStates_[chatId_] = states::DEFAULT_STATE;
 }
 
-states::StatesForm::Data states::StateContext::getData()
+states::StatesForm::Data& states::StateContext::data()
 {
-  return stateMachine_->storage_->getData(chatId_);
+  return stateMachine_->storage_->data(chatId_);
 }
 
-boost::any states::StateContext::getData(const states::State& state)
+boost::any& states::StateContext::data(const states::State& state)
 {
-  return stateMachine_->storage_->getData(chatId_, state);
+  return stateMachine_->storage_->data(chatId_, state);
 }

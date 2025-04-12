@@ -9,8 +9,15 @@ namespace states
   class State
   {
    public:
+    friend struct std::hash< State >;
+
+    State();
     bool operator==(const State& other) const;
+   private:
+    size_t id_;
+    static size_t lastId_;
   };
+  size_t State::lastId_ = 0;
 
   const State DEFAULT_STATE{};
 
@@ -27,8 +34,8 @@ namespace states
     friend class StateContext;
 
     Storage();
-    StatesForm::Data getData(size_t chatId);
-    boost::any getData(size_t chatId, const State& state);
+    StatesForm::Data& data(size_t chatId);
+    boost::any& data(size_t chatId, const State& state);
     void remove(size_t chatId);
    private:
     std::unordered_map< size_t, State > currentStates_;
@@ -42,7 +49,7 @@ namespace states
 
     StateMachine(Storage* storage);
     void setState(size_t chatId, const State& state);
-    State getState(size_t chatId);
+    State getState(size_t chatId) const;
    private:
     Storage* storage_;
   };
@@ -51,10 +58,11 @@ namespace states
   {
    public:
     StateContext(size_t chatId, StateMachine* stateMachine);
+    State current();
     void setState(const State& state);
     void resetState();
-    StatesForm::Data getData();
-    boost::any getData(const State& state);
+    StatesForm::Data& data();
+    boost::any& data(const State& state);
    private:
     size_t chatId_;
     StateMachine* stateMachine_;
@@ -68,7 +76,7 @@ namespace std
   {
     size_t operator()(const states::State& obj) const
     {
-      return hash< const states::State* >()(&obj);
+      return obj.id_;
     }
   };
 }
