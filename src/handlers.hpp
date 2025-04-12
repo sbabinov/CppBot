@@ -33,7 +33,7 @@ namespace handlers
     void addHandler(const std::string& cmd, handler_t handler);
     void addHandler(const states::State& state, state_handler_t handler);
     void addHandler(const std::string& cmd, const states::State& state, state_handler_t handler);
-    void processMessage(const types::Message& msg, const states::State& state) const;
+    void processMessage(const types::Message& msg, states::StateContext& state) const;
    private:
     std::unordered_map< std::string, handler_t > cmdHandlers_;
     std::unordered_map< states::State, state_handler_t > stateHandlers_;

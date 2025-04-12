@@ -9,10 +9,11 @@ namespace asio = boost::asio;
 namespace beast = boost::beast;
 namespace http = beast::http;
 
-cppbot::Bot::Bot(const std::string& token, std::shared_ptr< handlers::MessageHandler > mh):
+cppbot::Bot::Bot(const std::string& token, std::shared_ptr< handlers::MessageHandler > mh, states::Storage* storage):
   token_(token),
   mh_(mh),
-  sslContext_(asio::ssl::context::tlsv12_client)
+  sslContext_(asio::ssl::context::tlsv12_client),
+  stateMachine_(storage)
 {
   sslContext_.set_default_verify_paths();
 }
@@ -22,7 +23,7 @@ void cppbot::Bot::start()
   isRunning_ = true;
   ioThread_ = std::thread(&cppbot::Bot::runIoContext, this);
   std::thread(std::bind(&cppbot::Bot::fetchUpdates, this)).detach();
-  processMessagesAsync();
+  processMessages();
 }
 
 types::Message cppbot::Bot::sendMessage(size_t chatId, const std::string& text)
@@ -145,7 +146,7 @@ void cppbot::Bot::fetchUpdates()
   }
 }
 
-void cppbot::Bot::processMessagesAsync()
+void cppbot::Bot::processMessages()
 {
   while (isRunning_)
   {
@@ -158,6 +159,13 @@ void cppbot::Bot::processMessagesAsync()
     messageQueue_.pop();
     lock.unlock();
 
-    (*mh_).processMessage(msg);
+    states::StateContext state(msg.chat.id, &stateMachine_);
+
+    try
+    {
+      (*mh_).processMessage(msg, state);
+    }
+    catch (const std::exception&)
+    {}
   }
 }
