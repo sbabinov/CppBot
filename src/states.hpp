@@ -17,7 +17,6 @@ namespace states
     size_t id_;
     static size_t lastId_;
   };
-  size_t State::lastId_ = 0;
 
   const State DEFAULT_STATE{};
 

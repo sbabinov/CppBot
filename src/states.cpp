@@ -3,6 +3,7 @@
 states::State::State():
   id_(lastId_++)
 {}
+size_t states::State::lastId_ = 0;
 
 bool states::State::operator==(const states::State& other) const
 {
