@@ -22,7 +22,7 @@ states::State states::StateMachine::getState(size_t chatId) const
   }
   catch(const std::out_of_range&)
   {
-    return states::DEFAULT_STATE;
+    return states::StateMachine::DEFAULT_STATE;
   }
 }
 
@@ -30,6 +30,8 @@ void states::StateMachine::setState(size_t chatId, const State& state)
 {
   storage_->currentStates_[chatId] = state;
 }
+
+const states::State states::StateMachine::DEFAULT_STATE = {};
 
 states::Storage::Storage():
   currentStates_(),
@@ -68,7 +70,7 @@ void states::StateContext::setState(const states::State& state)
 
 void states::StateContext::resetState()
 {
-  stateMachine_->storage_->currentStates_[chatId_] = states::DEFAULT_STATE;
+  stateMachine_->storage_->currentStates_[chatId_] = states::StateMachine::DEFAULT_STATE;
 }
 
 states::StatesForm::Data& states::StateContext::data()

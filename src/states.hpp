@@ -18,7 +18,7 @@ namespace states
     static size_t lastId_;
   };
 
-  const State DEFAULT_STATE{};
+  //static const State DEFAULT_STATE = {};
 
   class StatesForm
   {
@@ -46,6 +46,7 @@ namespace states
    public:
     friend class StateContext;
 
+    static const State DEFAULT_STATE;
     StateMachine(Storage* storage);
     void setState(size_t chatId, const State& state);
     State getState(size_t chatId) const;

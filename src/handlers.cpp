@@ -1,6 +1,7 @@
 #include "handlers.hpp"
 #include <string>
 #include <utility>
+#include <iostream>
 
 std::string fetchCommand(const types::Message& msg)
 {
@@ -32,7 +33,7 @@ void handlers::MessageHandler::processMessage(const types::Message& msg, states:
   std::string cmd = fetchCommand(msg);
   states::State currentState = state.current();
   bool isHandlerExists = false;
-  if (currentState == states::DEFAULT_STATE)
+  if (currentState == states::StateMachine::DEFAULT_STATE)
   {
     cmdHandlers_.at(cmd)(msg);
     return;

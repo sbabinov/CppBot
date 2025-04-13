@@ -165,7 +165,9 @@ void cppbot::Bot::processMessages()
     {
       (*mh_).processMessage(msg, state);
     }
-    catch (const std::exception&)
-    {}
+    catch (const std::exception& e)
+    {
+      std::cerr << e.what() << '\n';
+    }
   }
 }
