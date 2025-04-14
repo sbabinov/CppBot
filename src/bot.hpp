@@ -18,6 +18,7 @@
 #include "states.hpp"
 
 namespace asio = boost::asio;
+namespace http = boost::beast::http;
 
 namespace cppbot
 {
@@ -31,6 +32,8 @@ namespace cppbot
     types::Message sendMessage(size_t chatId, const std::string& text,
       const types::InlineKeyboardMarkup replyMarkup = types::InlineKeyboardMarkup());
     types::Message editMessageText(size_t chatId, size_t messageId, const std::string& text);
+    bool answerCallbackQuery(size_t queryId, const std::string& text = "", bool showAlert = false,
+      const std::string& url = "", size_t cacheTime = 0);
    private:
     std::string token_;
     std::shared_ptr< handlers::MessageHandler > mh_;
@@ -53,6 +56,7 @@ namespace cppbot
 
     void runIoContext();
     void fetchUpdates();
+    http::response< http::string_body > sendRequest(const nlohmann::json& body, const std::string& endpoint);
     void processMessages();
     void processCallbackQueries();
   };
