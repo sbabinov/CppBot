@@ -37,6 +37,7 @@ namespace types
     User from;
     Chat chat;
     std::string text;
+    InlineKeyboardMarkup replyMarkup;
   };
   void to_json(json& j, const Message& msg);
   void from_json(const json& j, Message& msg);

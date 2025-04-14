@@ -70,6 +70,10 @@ void types::to_json(json& j, const types::Message& msg)
     {"chat", chat},
     {"text", msg.text}
   };
+  if (!msg.replyMarkup.keyboard.empty())
+  {
+    j["reply_markup"] = msg.replyMarkup;
+  }
 }
 
 void types::from_json(const json& j, types::Message& msg)
@@ -83,6 +87,10 @@ void types::from_json(const json& j, types::Message& msg)
   if (j.contains("text"))
   {
     j.at("text").get_to(msg.text);
+  }
+  if (j.contains("reply_markup"))
+  {
+    from_json(j.at("reply_markup"), msg.replyMarkup);
   }
 }
 
