@@ -47,15 +47,21 @@ namespace types
     std::string callbackData;
     std::string url;
 
+    InlineKeyboardButton() = default;
     InlineKeyboardButton(const std::string& text, const std::string& callbackData = "", const std::string& url = "");
   };
+  void to_json(json& j, const InlineKeyboardButton& button);
+  void from_json(const json& j, InlineKeyboardButton& button);
 
   struct InlineKeyboardMarkup
   {
     using keyboard_t = std::vector< std::vector< InlineKeyboardButton > >;
     keyboard_t keyboard;
+    InlineKeyboardMarkup() = default;
     InlineKeyboardMarkup(const keyboard_t& keyboard);
   };
+  void to_json(json& j, const InlineKeyboardMarkup& keyboard);
+  void from_json(const json& j, InlineKeyboardMarkup& keyboard);
 }
 
 #endif

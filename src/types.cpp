@@ -1,4 +1,5 @@
 #include "types.hpp"
+#include <iostream>
 
 using json = nlohmann::json;
 
@@ -97,4 +98,49 @@ types::InlineKeyboardButton::InlineKeyboardButton(const std::string& text, const
 types::InlineKeyboardMarkup::InlineKeyboardMarkup(const keyboard_t& keyboard)
 {
   this->keyboard = keyboard;
+}
+
+void types::to_json(json& j, const types::InlineKeyboardButton& button)
+{
+  j["text"] = button.text;
+  if (button.callbackData != "")
+  {
+    j["callbackData"] = button.callbackData;
+  }
+  if (button.url != "")
+  {
+    j["url"] = button.url;
+  }
+}
+
+void types::from_json(const json& j, types::InlineKeyboardButton& button)
+{
+  j.at("text").get_to(button.text);
+  if (j.contains("callbackData"))
+  {
+    j.at("callbackData").get_to(button.callbackData);
+  }
+  if (j.contains("url"))
+  {
+    j.at("url").get_to(button.callbackData);
+  }
+}
+
+void types::to_json(json& j, const types::InlineKeyboardMarkup& keyboard)
+{
+  j["inline_keyboard"] = keyboard.keyboard;
+}
+
+void types::from_json(const json& j, types::InlineKeyboardMarkup& keyboard)
+{
+  for (const auto& row : j.at("inline_keyboard"))
+  {
+    keyboard.keyboard.push_back(std::vector< types::InlineKeyboardButton >());
+    for (const auto& button : row)
+    {
+      keyboard.keyboard[keyboard.keyboard.size() - 1].push_back(types::InlineKeyboardButton{});
+      size_t buttonsLen = keyboard.keyboard[keyboard.keyboard.size() - 1].size();
+      from_json(button, keyboard.keyboard[keyboard.keyboard.size() - 1][buttonsLen - 1]);
+    }
+  }
 }
