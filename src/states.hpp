@@ -1,6 +1,7 @@
 #ifndef STATE_HPP
 #define STATE_HPP
 #include <string>
+#include <memory>
 #include <unordered_map>
 #include <boost/any.hpp>
 
@@ -47,11 +48,11 @@ namespace states
     friend class StateContext;
 
     static const State DEFAULT_STATE;
-    StateMachine(Storage* storage);
+    StateMachine(std::shared_ptr< Storage > storage);
     void setState(size_t chatId, const State& state) const;
     State getState(size_t chatId) const;
    private:
-    Storage* storage_;
+    std::shared_ptr< Storage > storage_;
   };
 
   class StateContext

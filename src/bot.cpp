@@ -9,7 +9,8 @@ namespace asio = boost::asio;
 namespace beast = boost::beast;
 namespace http = beast::http;
 
-cppbot::Bot::Bot(const std::string& token, std::shared_ptr< handlers::MessageHandler > mh, states::Storage* storage):
+cppbot::Bot::Bot(const std::string& token, std::shared_ptr< handlers::MessageHandler > mh,
+ std::shared_ptr< states::Storage > storage):
   token_(token),
   mh_(mh),
   sslContext_(asio::ssl::context::tlsv12_client),
