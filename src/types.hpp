@@ -9,6 +9,28 @@ using json = nlohmann::json;
 
 namespace types
 {
+  struct InlineKeyboardButton
+  {
+    std::string text;
+    std::string callbackData;
+    std::string url;
+
+    InlineKeyboardButton() = default;
+    InlineKeyboardButton(const std::string& text, const std::string& callbackData = "", const std::string& url = "");
+  };
+  void to_json(json& j, const InlineKeyboardButton& button);
+  void from_json(const json& j, InlineKeyboardButton& button);
+
+  struct InlineKeyboardMarkup
+  {
+    using keyboard_t = std::vector< std::vector< InlineKeyboardButton > >;
+    keyboard_t keyboard;
+    InlineKeyboardMarkup() = default;
+    InlineKeyboardMarkup(const keyboard_t& keyboard);
+  };
+  void to_json(json& j, const InlineKeyboardMarkup& keyboard);
+  void from_json(const json& j, InlineKeyboardMarkup& keyboard);
+
   struct User
   {
     size_t id;
@@ -41,28 +63,6 @@ namespace types
   };
   void to_json(json& j, const Message& msg);
   void from_json(const json& j, Message& msg);
-
-  struct InlineKeyboardButton
-  {
-    std::string text;
-    std::string callbackData;
-    std::string url;
-
-    InlineKeyboardButton() = default;
-    InlineKeyboardButton(const std::string& text, const std::string& callbackData = "", const std::string& url = "");
-  };
-  void to_json(json& j, const InlineKeyboardButton& button);
-  void from_json(const json& j, InlineKeyboardButton& button);
-
-  struct InlineKeyboardMarkup
-  {
-    using keyboard_t = std::vector< std::vector< InlineKeyboardButton > >;
-    keyboard_t keyboard;
-    InlineKeyboardMarkup() = default;
-    InlineKeyboardMarkup(const keyboard_t& keyboard);
-  };
-  void to_json(json& j, const InlineKeyboardMarkup& keyboard);
-  void from_json(const json& j, InlineKeyboardMarkup& keyboard);
 }
 
 #endif
