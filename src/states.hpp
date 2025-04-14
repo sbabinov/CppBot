@@ -19,8 +19,6 @@ namespace states
     static size_t lastId_;
   };
 
-  //static const State DEFAULT_STATE = {};
-
   class StatesForm
   {
    public:

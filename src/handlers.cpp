@@ -1,7 +1,6 @@
 #include "handlers.hpp"
 #include <string>
 #include <utility>
-#include <iostream>
 
 std::string fetchCommand(const types::Message& msg)
 {
