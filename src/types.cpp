@@ -164,7 +164,8 @@ void types::to_json(json& j, const types::CallbackQuery& query)
   j = json{
     {"id", query.id},
     {"from", from},
-    {"message", message}
+    {"message", message},
+    {"data", query.data}
   };
 }
 
@@ -178,5 +179,9 @@ void types::from_json(const json& j, types::CallbackQuery& query)
   if (j.contains("message"))
   {
     from_json(j.at("message"), query.message);
+  }
+  if (j.contains("data"))
+  {
+    j.at("data").get_to(query.data);
   }
 }
