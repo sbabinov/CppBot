@@ -153,3 +153,30 @@ void types::from_json(const json& j, types::Message& msg)
     from_json(j.at("reply_markup"), msg.replyMarkup);
   }
 }
+
+// CallbackQuery
+void types::to_json(json& j, const types::CallbackQuery& query)
+{
+  json from;
+  json message;
+  to_json(from, query.from);
+  to_json(message, query.message);
+  j = json{
+    {"id", query.id},
+    {"from", from},
+    {"message", message}
+  };
+}
+
+void types::from_json(const json& j, types::CallbackQuery& query)
+{
+  j.at("id").get_to(query.id);
+  if (j.contains("from"))
+  {
+    from_json(j.at("from"), query.from);
+  }
+  if (j.contains("message"))
+  {
+    from_json(j.at("message"), query.message);
+  }
+}

@@ -63,6 +63,15 @@ namespace types
   };
   void to_json(json& j, const Message& msg);
   void from_json(const json& j, Message& msg);
+
+  struct CallbackQuery
+  {
+    size_t id;
+    User from;
+    Message message;
+  };
+  void to_json(json& j, const CallbackQuery& query);
+  void from_json(const json& j, CallbackQuery& query);
 }
 
 #endif
