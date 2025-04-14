@@ -29,6 +29,7 @@ namespace cppbot
     void start();
     void stop();
     types::Message sendMessage(size_t chatId, const std::string& text);
+    types::Message editMessageText(size_t chatId, size_t messageId, const std::string& text);
    private:
     std::string token_;
     std::shared_ptr< handlers::MessageHandler > mh_;

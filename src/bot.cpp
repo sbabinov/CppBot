@@ -50,8 +50,8 @@ types::Message cppbot::Bot::sendMessage(size_t chatId, const std::string& text)
         throw boost::system::system_error(::ERR_get_error(), asio::error::get_ssl_category());
       }
 
-      auto const results = resolver.resolve(host, "443");
-      asio::connect(socket.next_layer(), results.begin(), results.end());
+      auto const endpoints = resolver.resolve(host, "443");
+      asio::connect(socket.next_layer(), endpoints.begin(), endpoints.end());
 
       socket.handshake(asio::ssl::stream_base::client);
 
@@ -68,6 +68,57 @@ types::Message cppbot::Bot::sendMessage(size_t chatId, const std::string& text)
       http::response< http::string_body > res;
       http::read(socket, buffer, res);
 
+      promise.set_value(nlohmann::json::parse(res.body())["result"].template get< types::Message >());
+    }
+    catch (std::exception const& e)
+    {
+      std::cerr << "Error: " << e.what() << std::endl;
+      promise.set_value(types::Message());
+    }
+  });
+  return msg.get();
+}
+
+types::Message cppbot::Bot::editMessageText(size_t chatId, size_t messageId, const std::string& text)
+{
+  std::promise< types::Message > promise;
+  std::future< types::Message > msg = promise.get_future();
+  asio::post(ioContext_, [this, chatId, messageId, &text, &promise]
+  {
+    std::string host = "api.telegram.org";
+    std::string path = "/bot" + token_ + "/editMessageText";
+    nlohmann::json body = {
+      {"chat_id", chatId},
+      {"message_id", messageId},
+      {"text", text}
+    };
+    asio::ip::tcp::resolver resolver(ioContext_);
+    asio::ssl::stream< asio::ip::tcp::socket > socket(ioContext_, sslContext_);
+
+    try
+    {
+      if (!SSL_set_tlsext_host_name(socket.native_handle(), host.c_str()))
+      {
+        throw boost::system::system_error(::ERR_get_error(), asio::error::get_ssl_category());
+      }
+
+      auto const endpoints = resolver.resolve(host, "443");
+      asio::connect(socket.next_layer(), endpoints.begin(), endpoints.end());
+
+      socket.handshake(asio::ssl::stream_base::client);
+
+      http::request< http::string_body > req{http::verb::post, path, 11};
+      req.set(http::field::host, host);
+      req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+      req.set(http::field::content_type, "application/json");
+      req.body() = body.dump();
+      req.prepare_payload();
+
+      http::write(socket, req);
+
+      beast::flat_buffer buffer;
+      http::response< http::string_body > res;
+      http::read(socket, buffer, res);
       promise.set_value(nlohmann::json::parse(res.body())["result"].template get< types::Message >());
     }
     catch (std::exception const& e)
