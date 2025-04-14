@@ -10,9 +10,10 @@ namespace beast = boost::beast;
 namespace http = beast::http;
 
 cppbot::Bot::Bot(const std::string& token, std::shared_ptr< handlers::MessageHandler > mh,
- std::shared_ptr< states::Storage > storage):
+ std::shared_ptr< handlers::CallbackQueryHandler > qh, std::shared_ptr< states::Storage > storage):
   token_(token),
   mh_(mh),
+  qh_(qh),
   sslContext_(asio::ssl::context::tlsv12_client),
   stateMachine_(storage)
 {

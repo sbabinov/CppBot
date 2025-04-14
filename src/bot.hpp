@@ -25,7 +25,7 @@ namespace cppbot
   {
    public:
     Bot(const std::string& token, std::shared_ptr< handlers::MessageHandler > mh,
-     std::shared_ptr< states::Storage > storage);
+      std::shared_ptr< handlers::CallbackQueryHandler > qh, std::shared_ptr< states::Storage > storage);
     void start();
     void stop();
     types::Message sendMessage(size_t chatId, const std::string& text,

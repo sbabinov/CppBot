@@ -1,5 +1,4 @@
 #include "types.hpp"
-#include <iostream>
 
 using json = nlohmann::json;
 
@@ -162,7 +161,7 @@ void types::to_json(json& j, const types::CallbackQuery& query)
   to_json(from, query.from);
   to_json(message, query.message);
   j = json{
-    {"id", query.id},
+    {"id", std::to_string(query.id)},
     {"from", from},
     {"message", message},
     {"data", query.data}
@@ -171,7 +170,9 @@ void types::to_json(json& j, const types::CallbackQuery& query)
 
 void types::from_json(const json& j, types::CallbackQuery& query)
 {
-  j.at("id").get_to(query.id);
+  std::string stringId;
+  j.at("id").get_to(stringId);
+  query.id = std::stoull(stringId);
   if (j.contains("from"))
   {
     from_json(j.at("from"), query.from);
