@@ -38,6 +38,18 @@ namespace handlers
     std::unordered_map< states::State, handler_t > stateHandlers_;
     std::unordered_map< std::pair< std::string, states::State >, handler_t, detail::PairHasher > stateCmdHandlers_;
   };
+
+  class CallbackQueryHandler
+  {
+    using handler_t = std::function< void(const types::CallbackQuery&) >;
+   public:
+    CallbackQueryHandler() = default;
+    void addHandler(const std::string& callData, handler_t handler, bool allowPartialMatch = false);
+    void processCallbackQuery(const types::CallbackQuery& query) const;
+   private:
+    std::unordered_map< std::string, handler_t > handlers_;
+    std::map< std::string, handler_t > partialMatchHandlers_;
+  };
 }
 
 #endif
