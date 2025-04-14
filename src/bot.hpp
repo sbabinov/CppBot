@@ -32,6 +32,7 @@ namespace cppbot
     types::Message sendMessage(size_t chatId, const std::string& text,
       const types::InlineKeyboardMarkup replyMarkup = types::InlineKeyboardMarkup());
     types::Message editMessageText(size_t chatId, size_t messageId, const std::string& text);
+    bool deleteMessage(size_t chatId, size_t messageId);
     bool answerCallbackQuery(size_t queryId, const std::string& text = "", bool showAlert = false,
       const std::string& url = "", size_t cacheTime = 0);
    private:

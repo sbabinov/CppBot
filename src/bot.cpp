@@ -54,6 +54,16 @@ types::Message cppbot::Bot::editMessageText(size_t chatId, size_t messageId, con
   return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
 }
 
+bool cppbot::Bot::deleteMessage(size_t chatId, size_t messageId)
+{
+  nlohmann::json body = {
+    {"chat_id", chatId},
+    {"message_id", messageId}
+  };
+  http::response< http::string_body > response = sendRequest(body, "/deleteMessage");
+  return nlohmann::json::parse(response.body())["result"].template get< bool >();
+}
+
 bool cppbot::Bot::answerCallbackQuery(size_t queryId, const std::string& text, bool showAlert,
  const std::string& url, size_t cacheTime)
 {
