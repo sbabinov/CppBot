@@ -34,12 +34,19 @@ namespace cppbot
    private:
     std::string token_;
     std::shared_ptr< handlers::MessageHandler > mh_;
+    std::shared_ptr< handlers::CallbackQueryHandler > qh_;
     asio::io_context ioContext_;
     asio::ssl::context sslContext_;
     std::thread ioThread_;
+
     std::queue< types::Message > messageQueue_;
-    std::mutex queueMutex_;
-    std::condition_variable queueCondition_;
+    std::mutex messageQueueMutex_;
+    std::condition_variable messageQueueCondition_;
+
+    std::queue< types::CallbackQuery > queryQueue_;
+    std::mutex queryQueueMutex_;
+    std::condition_variable queryQueueCondition_;
+
     bool isRunning_ = false;
 
     states::StateMachine stateMachine_;
@@ -47,6 +54,7 @@ namespace cppbot
     void runIoContext();
     void fetchUpdates();
     void processMessages();
+    void processCallbackQueries();
   };
 }
 

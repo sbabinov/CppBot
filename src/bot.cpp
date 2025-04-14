@@ -24,6 +24,7 @@ void cppbot::Bot::start()
   isRunning_ = true;
   ioThread_ = std::thread(&cppbot::Bot::runIoContext, this);
   std::thread(std::bind(&cppbot::Bot::fetchUpdates, this)).detach();
+  std::thread(std::bind(&cppbot::Bot::processCallbackQueries, this)).detach();
   processMessages();
 }
 
@@ -186,9 +187,15 @@ void cppbot::Bot::fetchUpdates()
         lastUpdateId = update["update_id"];
         if (update.contains("message"))
         {
-          std::lock_guard< std::mutex > lock(queueMutex_);
+          std::lock_guard< std::mutex > lock(messageQueueMutex_);
           messageQueue_.push(update["message"].template get< types::Message >());
-          queueCondition_.notify_one();
+          messageQueueCondition_.notify_one();
+        }
+        if (update.contains("callback_query"))
+        {
+          std::lock_guard< std::mutex > lock(queryQueueMutex_);
+          queryQueue_.push(update["callback_query"].template get< types::CallbackQuery >());
+          queryQueueCondition_.notify_one();
         }
       }
     }
@@ -205,8 +212,8 @@ void cppbot::Bot::processMessages()
 {
   while (isRunning_)
   {
-    std::unique_lock< std::mutex > lock(queueMutex_);
-    queueCondition_.wait(lock, [this]
+    std::unique_lock< std::mutex > lock(messageQueueMutex_);
+    messageQueueCondition_.wait(lock, [this]
     {
       return !messageQueue_.empty();
     });
@@ -219,6 +226,30 @@ void cppbot::Bot::processMessages()
     try
     {
       (*mh_).processMessage(msg, state);
+    }
+    catch (const std::exception& e)
+    {
+      std::cerr << e.what() << '\n';
+    }
+  }
+}
+
+void cppbot::Bot::processCallbackQueries()
+{
+  while (isRunning_)
+  {
+    std::unique_lock< std::mutex > lock(queryQueueMutex_);
+    queryQueueCondition_.wait(lock, [this]
+    {
+      return !queryQueue_.empty();
+    });
+    types::CallbackQuery query = queryQueue_.front();
+    queryQueue_.pop();
+    lock.unlock();
+
+    try
+    {
+      (*qh_).processCallbackQuery(query);
     }
     catch (const std::exception& e)
     {
