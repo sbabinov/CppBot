@@ -84,3 +84,17 @@ void types::from_json(const json& j, types::Message& msg)
     j.at("text").get_to(msg.text);
   }
 }
+
+// InlineKeyboard
+types::InlineKeyboardButton::InlineKeyboardButton(const std::string& text, const std::string& callbackData,
+ const std::string& url)
+{
+  this->text = text;
+  this->callbackData = callbackData;
+  this->url = url;
+}
+
+types::InlineKeyboardMarkup::InlineKeyboardMarkup(const keyboard_t& keyboard)
+{
+  this->keyboard = keyboard;
+}
