@@ -28,7 +28,8 @@ namespace cppbot
      std::shared_ptr< states::Storage > storage);
     void start();
     void stop();
-    types::Message sendMessage(size_t chatId, const std::string& text);
+    types::Message sendMessage(size_t chatId, const std::string& text,
+      const types::InlineKeyboardMarkup replyMarkup = types::InlineKeyboardMarkup());
     types::Message editMessageText(size_t chatId, size_t messageId, const std::string& text);
    private:
     std::string token_;

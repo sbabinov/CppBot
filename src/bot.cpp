@@ -27,11 +27,11 @@ void cppbot::Bot::start()
   processMessages();
 }
 
-types::Message cppbot::Bot::sendMessage(size_t chatId, const std::string& text)
+types::Message cppbot::Bot::sendMessage(size_t chatId, const std::string& text, const types::InlineKeyboardMarkup replyMarkup)
 {
   std::promise< types::Message > promise;
   std::future< types::Message > msg = promise.get_future();
-  asio::post(ioContext_, [this, chatId, &text, &promise]
+  asio::post(ioContext_, [this, chatId, &replyMarkup, &text, &promise]
   {
     std::string host = "api.telegram.org";
     std::string path = "/bot" + token_ + "/sendMessage";
@@ -39,6 +39,10 @@ types::Message cppbot::Bot::sendMessage(size_t chatId, const std::string& text)
       {"chat_id", chatId},
       {"text", text}
     };
+    if (!replyMarkup.keyboard.empty())
+    {
+      body["reply_markup"] = replyMarkup;
+    }
 
     asio::ip::tcp::resolver resolver(ioContext_);
     asio::ssl::stream< asio::ip::tcp::socket > socket(ioContext_, sslContext_);
@@ -67,7 +71,6 @@ types::Message cppbot::Bot::sendMessage(size_t chatId, const std::string& text)
       beast::flat_buffer buffer;
       http::response< http::string_body > res;
       http::read(socket, buffer, res);
-
       promise.set_value(nlohmann::json::parse(res.body())["result"].template get< types::Message >());
     }
     catch (std::exception const& e)
