@@ -26,7 +26,7 @@ states::State states::StateMachine::getState(size_t chatId) const
   }
 }
 
-void states::StateMachine::setState(size_t chatId, const State& state)
+void states::StateMachine::setState(size_t chatId, const State& state) const
 {
   storage_->currentStates_[chatId] = state;
 }
@@ -63,7 +63,7 @@ states::State states::StateContext::current()
   return stateMachine_->getState(chatId_);
 }
 
-void states::StateContext::setState(const states::State& state)
+void states::StateContext::setState(const states::State& state) const
 {
   stateMachine_->storage_->currentStates_[chatId_] = state;
 }

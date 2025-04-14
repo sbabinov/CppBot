@@ -48,7 +48,7 @@ namespace states
 
     static const State DEFAULT_STATE;
     StateMachine(Storage* storage);
-    void setState(size_t chatId, const State& state);
+    void setState(size_t chatId, const State& state) const;
     State getState(size_t chatId) const;
    private:
     Storage* storage_;
@@ -59,7 +59,7 @@ namespace states
    public:
     StateContext(size_t chatId, StateMachine* stateMachine);
     State current();
-    void setState(const State& state);
+    void setState(const State& state) const;
     void resetState();
     StatesForm::Data& data();
     boost::any& data(const State& state);
