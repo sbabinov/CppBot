@@ -148,6 +148,23 @@ types::Message cppbot::Bot::sendDocument(size_t chatId, const types::InputFile& 
   return sendFile(chatId, document, "/sendDocument", fields);
 }
 
+types::Message cppbot::Bot::sendAudio(size_t chatId, const types::InputFile& audio, const std::string& caption,
+  const types::InlineKeyboardMarkup& replyMarkup)
+{
+  std::string boundary = generateBoundary();
+  nlohmann::json fields;
+  fields["chat_id"] = chatId;
+  if (caption != "")
+  {
+    fields["caption"] = caption;
+  }
+  if (!replyMarkup.keyboard.empty())
+  {
+    fields["reply_markup"] = replyMarkup;
+  }
+  return sendFile(chatId, audio, "/sendAudio", fields);
+}
+
 void cppbot::Bot::stop()
 {
     isRunning_ = false;
@@ -276,6 +293,10 @@ types::Message cppbot::Bot::sendFile(size_t chatId, const types::InputFile& file
   else if (endpoint == "/sendDocument")
   {
     fileType = "document";
+  }
+  else if (endpoint == "/sendAudio")
+  {
+    fileType = "audio";
   }
 
   std::string boundary = generateBoundary();
