@@ -15,7 +15,7 @@ std::string generateBoundary()
 }
 
 std::string createMultipartBody(const std::string& boundary, nlohmann::json fields,
-  const std::string& fileName, const std::string& fileType, const types::InputFile& file)
+  const std::string& fileType, const types::InputFile& file)
 {
   std::string body = "";
 
@@ -27,7 +27,7 @@ std::string createMultipartBody(const std::string& boundary, nlohmann::json fiel
   }
 
   body += "--" + boundary + "\r\n";
-  body += "Content-Disposition: form-data; name=\"" + fileType + "\"; filename=\"" + fileName + "\"\r\n";
+  body += "Content-Disposition: form-data; name=\"" + fileType + "\"; filename=\"" + file.name() + "\"\r\n";
   body += "Content-type: application/octet-stream\r\n\r\n";
   body += file.asStringBytes() + "\r\n";
 
@@ -350,7 +350,7 @@ types::Message cppbot::Bot::sendFile(size_t chatId, const types::InputFile& file
 
   std::string boundary = generateBoundary();
 
-  std::string body = createMultipartBody(boundary, fields, file.name(), fileType, file);
+  std::string body = createMultipartBody(boundary, fields, fileType, file);
   http::response< http::string_body > response = sendRequest(
     body,
     endpoint,
