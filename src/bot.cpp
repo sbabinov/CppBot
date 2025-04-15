@@ -14,11 +14,6 @@ std::string generateBoundary()
   return "----CppbotBoundary" + std::to_string(rand());
 }
 
-std::string extractFileName(const std::string& path)
-{
-  return path.substr(path.find_last_of("/\\") + 1);
-}
-
 std::string createMultipartBody(const std::string& boundary, nlohmann::json fields,
   const std::string& fileName, const std::string& fileType, const types::InputFile& file)
 {
@@ -285,7 +280,7 @@ types::Message cppbot::Bot::sendFile(size_t chatId, const types::InputFile& file
 
   std::string boundary = generateBoundary();
 
-  std::string body = createMultipartBody(boundary, fields, "image.jpg", fileType, file);
+  std::string body = createMultipartBody(boundary, fields, file.name(), fileType, file);
   http::response< http::string_body > response = sendRequest(
     body,
     endpoint,
