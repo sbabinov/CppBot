@@ -129,6 +129,10 @@ types::Message cppbot::Bot::sendPhoto(size_t chatId, const types::InputFile& pho
   {
     fields["reply_markup"] = replyMarkup;
   }
+  if (hasSpoiler)
+  {
+    fields["has_spoiler"] = hasSpoiler;
+  }
   return sendFile(chatId, photo, "/sendPhoto", fields);
 }
 
