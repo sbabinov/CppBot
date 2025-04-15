@@ -80,6 +80,23 @@ types::Message cppbot::Bot::editMessageText(size_t chatId, size_t messageId, con
   return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
 }
 
+types::Message cppbot::Bot::editMessageCaption(size_t chatId, size_t messageId, const std::string& caption,
+  const types::InlineKeyboardMarkup& replyMarkup)
+{
+  nlohmann::json body = {
+    {"chat_id", chatId},
+    {"message_id", messageId},
+    {"caption", caption}
+  };
+  if (!replyMarkup.keyboard.empty())
+  {
+    body["reply_markup"] = replyMarkup;
+  }
+
+  http::response< http::string_body > response = sendRequest(body.dump(), "/editMessageCaption");
+  return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
+}
+
 bool cppbot::Bot::deleteMessage(size_t chatId, size_t messageId)
 {
   nlohmann::json body = {
@@ -264,7 +281,7 @@ http::response< http::string_body > cppbot::Bot::sendRequest(const std::string& 
   const std::vector< std::pair< http::field, std::string > >& additionalHeaders, const std::string& contentType)
 {
   std::promise< http::response< http::string_body > > promise;
-  std::future< http::response< http::string_body > > response = promise.get_future();
+  std::future< http::response< http::string_body > > future = promise.get_future();
   asio::post(ioContext_, [this, &body, &endpoint, &additionalHeaders, &contentType, &promise]
   {
     std::string host = "api.telegram.org";
@@ -300,7 +317,14 @@ http::response< http::string_body > cppbot::Bot::sendRequest(const std::string& 
     http::read(socket, buffer, res);
     promise.set_value(res);
   });
-  return response.get();
+
+  http::response< http::string_body > result = future.get();
+  nlohmann::json response = nlohmann::json::parse(result.body());
+  if (!response["ok"])
+  {
+    throw std::runtime_error(response["description"]);
+  }
+  return result;
 }
 
 types::Message cppbot::Bot::sendFile(size_t chatId, const types::InputFile& file,
