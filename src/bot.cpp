@@ -9,6 +9,37 @@ namespace asio = boost::asio;
 namespace beast = boost::beast;
 namespace http = beast::http;
 
+std::string generateBoundary()
+{
+  return "----CppbotBoundary" + std::to_string(rand());
+}
+
+std::string extractFileName(const std::string& path)
+{
+  return path.substr(path.find_last_of("/\\") + 1);
+}
+
+std::string createMultipartBody(const std::string& boundary, nlohmann::json fields,
+  const std::string& fileName, const std::string& fileType, const types::InputFile& file)
+{
+  std::string body = "";
+
+  for (const auto& [field, value] : fields.items())
+  {
+    body += "--" + boundary + "\r\n";
+    body += "Content-Disposition: form-data; name=\"" + field + "\"\r\n\r\n";
+    body += value.dump() + "\r\n";
+  }
+
+  body += "--" + boundary + "\r\n";
+  body += "Content-Disposition: form-data; name=\"" + fileType + "\"; filename=\"" + fileName + "\"\r\n";
+  body += "Content-type: application/octet-stream\r\n\r\n";
+  body += file.asStringBytes() + "\r\n";
+
+  body += "--" + boundary + "--\r\n";
+  return body;
+}
+
 cppbot::Bot::Bot(const std::string& token, std::shared_ptr< handlers::MessageHandler > mh,
  std::shared_ptr< handlers::CallbackQueryHandler > qh, std::shared_ptr< states::Storage > storage):
   token_(token),
@@ -39,7 +70,7 @@ types::Message cppbot::Bot::sendMessage(size_t chatId, const std::string& text, 
   {
     body["reply_markup"] = replyMarkup;
   }
-  http::response< http::string_body > response = sendRequest(body, "/sendMessage");
+  http::response< http::string_body > response = sendRequest(body.dump(), "/sendMessage");
   return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
 }
 
@@ -50,7 +81,7 @@ types::Message cppbot::Bot::editMessageText(size_t chatId, size_t messageId, con
     {"message_id", messageId},
     {"text", text}
   };
-  http::response< http::string_body > response = sendRequest(body, "/editMessageText");
+  http::response< http::string_body > response = sendRequest(body.dump(), "/editMessageText");
   return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
 }
 
@@ -60,12 +91,12 @@ bool cppbot::Bot::deleteMessage(size_t chatId, size_t messageId)
     {"chat_id", chatId},
     {"message_id", messageId}
   };
-  http::response< http::string_body > response = sendRequest(body, "/deleteMessage");
+  http::response< http::string_body > response = sendRequest(body.dump(), "/deleteMessage");
   return nlohmann::json::parse(response.body())["result"].template get< bool >();
 }
 
 bool cppbot::Bot::answerCallbackQuery(size_t queryId, const std::string& text, bool showAlert,
- const std::string& url, size_t cacheTime)
+  const std::string& url, size_t cacheTime)
 {
   nlohmann::json body = {
     {"callback_query_id", std::to_string(queryId)},
@@ -80,8 +111,38 @@ bool cppbot::Bot::answerCallbackQuery(size_t queryId, const std::string& text, b
   {
     body["url"] = url;
   }
-  http::response< http::string_body > response = sendRequest(body, "/answerCallbackQuery");
+  http::response< http::string_body > response = sendRequest(body.dump(), "/answerCallbackQuery");
   return nlohmann::json::parse(response.body())["result"].template get< bool >();
+}
+
+types::Message cppbot::Bot::sendPhoto(size_t chatId, const types::InputFile& photo, const std::string& caption,
+  const types::InlineKeyboardMarkup& replyMarkup, bool hasSpoiler)
+{
+  std::string boundary = generateBoundary();
+  nlohmann::json j;
+  j["chat_id"] = chatId;
+  if (caption != "")
+  {
+    j["caption"] = caption;
+  }
+  if (!replyMarkup.keyboard.empty())
+  {
+    j["reply_markup"] = replyMarkup;
+  }
+
+  std::string body = createMultipartBody(boundary, j, "image.jpg", "photo", photo);
+  http::response< http::string_body > response = sendRequest(
+    body,
+    "/sendPhoto",
+    {{http::field::content_length, std::to_string(body.size())}, {http::field::connection, "close"}},
+    "multipart/form-data; boundary=" + boundary
+  );
+  nlohmann::json jsonResponse = nlohmann::json::parse(response.body());
+  if (!jsonResponse["ok"])
+  {
+    throw std::runtime_error(jsonResponse["description"]);
+  }
+  return jsonResponse["result"].template get< types::Message >();
 }
 
 void cppbot::Bot::stop()
@@ -158,11 +219,12 @@ void cppbot::Bot::fetchUpdates()
   }
 }
 
-http::response< http::string_body > cppbot::Bot::sendRequest(const nlohmann::json& body, const std::string& endpoint)
+http::response< http::string_body > cppbot::Bot::sendRequest(const std::string& body, const std::string& endpoint,
+  const std::vector< std::pair< http::field, std::string > >& additionalHeaders, const std::string& contentType)
 {
   std::promise< http::response< http::string_body > > promise;
   std::future< http::response< http::string_body > > response = promise.get_future();
-  asio::post(ioContext_, [this, &body, &endpoint, &promise]
+  asio::post(ioContext_, [this, &body, &endpoint, &additionalHeaders, &contentType, &promise]
   {
     std::string host = "api.telegram.org";
     std::string path = "/bot" + token_ + endpoint;
@@ -182,8 +244,12 @@ http::response< http::string_body > cppbot::Bot::sendRequest(const nlohmann::jso
     http::request< http::string_body > req{http::verb::post, path, 11};
     req.set(http::field::host, host);
     req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
-    req.set(http::field::content_type, "application/json");
-    req.body() = body.dump();
+    req.set(http::field::content_type, contentType);
+    for (const auto& header : additionalHeaders)
+    {
+      req.set(header.first, header.second);
+    }
+    req.body() = body;
     req.prepare_payload();
 
     http::write(socket, req);

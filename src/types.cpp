@@ -4,7 +4,6 @@
 
 using json = nlohmann::json;
 
-
 // InlineKeyboard
 types::InlineKeyboardButton::InlineKeyboardButton(const std::string& text, const std::string& callbackData,
  const std::string& url)

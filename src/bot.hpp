@@ -7,6 +7,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <memory>
+#include <utility>
 
 #include <nlohmann/json.hpp>
 #include <boost/asio/ssl.hpp>
@@ -29,12 +30,15 @@ namespace cppbot
       std::shared_ptr< handlers::CallbackQueryHandler > qh, std::shared_ptr< states::Storage > storage);
     void start();
     void stop();
-    types::Message sendMessage(size_t chatId, const std::string& text,
+
+    types::Message sendMessage        (size_t chatId, const std::string& text,
       const types::InlineKeyboardMarkup replyMarkup = types::InlineKeyboardMarkup());
-    types::Message editMessageText(size_t chatId, size_t messageId, const std::string& text);
-    bool deleteMessage(size_t chatId, size_t messageId);
-    bool answerCallbackQuery(size_t queryId, const std::string& text = "", bool showAlert = false,
+    types::Message editMessageText    (size_t chatId, size_t messageId, const std::string& text);
+    bool           deleteMessage      (size_t chatId, size_t messageId);
+    bool           answerCallbackQuery(size_t queryId, const std::string& text = "", bool showAlert = false,
       const std::string& url = "", size_t cacheTime = 0);
+    types::Message sendPhoto          (size_t chatId, const types::InputFile& photo, const std::string& caption = "",
+      const types::InlineKeyboardMarkup& replyMarkup = types::InlineKeyboardMarkup(), bool hasSpoiler = false);
    private:
     std::string token_;
     std::shared_ptr< handlers::MessageHandler > mh_;
@@ -57,7 +61,8 @@ namespace cppbot
 
     void runIoContext();
     void fetchUpdates();
-    http::response< http::string_body > sendRequest(const nlohmann::json& body, const std::string& endpoint);
+    http::response< http::string_body > sendRequest(const std::string& body, const std::string& endpoint,
+      const std::vector< std::pair < http::field, std::string > >& additionalHeaders = {}, const std::string& contentType = "application/json");
     void processMessages();
     void processCallbackQueries();
   };
