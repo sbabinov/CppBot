@@ -199,3 +199,8 @@ types::InputFile::InputFile(const std::string& path)
   }
   strBytes_ = std::string(std::istreambuf_iterator< char >(file), std::istreambuf_iterator< char >());
 }
+
+std::string types::InputFile::asStringBytes() const
+{
+  return strBytes_;
+}

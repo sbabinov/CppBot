@@ -76,7 +76,9 @@ namespace types
 
   class InputFile
   {
+   public:
     InputFile(const std::string& path);
+    std::string asStringBytes() const;
    private:
     std::string strBytes_;
   };
