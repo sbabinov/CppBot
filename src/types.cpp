@@ -1,4 +1,6 @@
 #include "types.hpp"
+#include <fstream>
+#include <exception>
 
 using json = nlohmann::json;
 
@@ -185,4 +187,15 @@ void types::from_json(const json& j, types::CallbackQuery& query)
   {
     j.at("data").get_to(query.data);
   }
+}
+
+// Files
+types::InputFile::InputFile(const std::string& path)
+{
+  std::ifstream file(path, std::ios::binary);
+  if (!file)
+  {
+    throw std::runtime_error("Cannot open file: " + path);
+  }
+  strBytes_ = std::string(std::istreambuf_iterator< char >(file), std::istreambuf_iterator< char >());
 }

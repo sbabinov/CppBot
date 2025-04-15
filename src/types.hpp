@@ -73,6 +73,13 @@ namespace types
   };
   void to_json(json& j, const CallbackQuery& query);
   void from_json(const json& j, CallbackQuery& query);
+
+  class InputFile
+  {
+    InputFile(const std::string& path);
+   private:
+    std::string strBytes_;
+  };
 }
 
 #endif
