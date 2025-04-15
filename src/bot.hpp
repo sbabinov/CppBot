@@ -18,6 +18,7 @@
 #include "states.hpp"
 
 namespace asio = boost::asio;
+namespace http = boost::beast::http;
 
 namespace cppbot
 {
@@ -25,26 +26,40 @@ namespace cppbot
   {
    public:
     Bot(const std::string& token, std::shared_ptr< handlers::MessageHandler > mh,
-     std::shared_ptr< states::Storage > storage);
+      std::shared_ptr< handlers::CallbackQueryHandler > qh, std::shared_ptr< states::Storage > storage);
     void start();
     void stop();
-    types::Message sendMessage(size_t chatId, const std::string& text);
+    types::Message sendMessage(size_t chatId, const std::string& text,
+      const types::InlineKeyboardMarkup replyMarkup = types::InlineKeyboardMarkup());
+    types::Message editMessageText(size_t chatId, size_t messageId, const std::string& text);
+    bool deleteMessage(size_t chatId, size_t messageId);
+    bool answerCallbackQuery(size_t queryId, const std::string& text = "", bool showAlert = false,
+      const std::string& url = "", size_t cacheTime = 0);
    private:
     std::string token_;
     std::shared_ptr< handlers::MessageHandler > mh_;
+    std::shared_ptr< handlers::CallbackQueryHandler > qh_;
     asio::io_context ioContext_;
     asio::ssl::context sslContext_;
     std::thread ioThread_;
+
     std::queue< types::Message > messageQueue_;
-    std::mutex queueMutex_;
-    std::condition_variable queueCondition_;
+    std::mutex messageQueueMutex_;
+    std::condition_variable messageQueueCondition_;
+
+    std::queue< types::CallbackQuery > queryQueue_;
+    std::mutex queryQueueMutex_;
+    std::condition_variable queryQueueCondition_;
+
     bool isRunning_ = false;
 
     states::StateMachine stateMachine_;
 
     void runIoContext();
     void fetchUpdates();
+    http::response< http::string_body > sendRequest(const nlohmann::json& body, const std::string& endpoint);
     void processMessages();
+    void processCallbackQueries();
   };
 }
 

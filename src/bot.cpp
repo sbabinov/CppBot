@@ -10,9 +10,10 @@ namespace beast = boost::beast;
 namespace http = beast::http;
 
 cppbot::Bot::Bot(const std::string& token, std::shared_ptr< handlers::MessageHandler > mh,
- std::shared_ptr< states::Storage > storage):
+ std::shared_ptr< handlers::CallbackQueryHandler > qh, std::shared_ptr< states::Storage > storage):
   token_(token),
   mh_(mh),
+  qh_(qh),
   sslContext_(asio::ssl::context::tlsv12_client),
   stateMachine_(storage)
 {
@@ -24,59 +25,63 @@ void cppbot::Bot::start()
   isRunning_ = true;
   ioThread_ = std::thread(&cppbot::Bot::runIoContext, this);
   std::thread(std::bind(&cppbot::Bot::fetchUpdates, this)).detach();
+  std::thread(std::bind(&cppbot::Bot::processCallbackQueries, this)).detach();
   processMessages();
 }
 
-types::Message cppbot::Bot::sendMessage(size_t chatId, const std::string& text)
+types::Message cppbot::Bot::sendMessage(size_t chatId, const std::string& text, const types::InlineKeyboardMarkup replyMarkup)
 {
-  std::promise< types::Message > promise;
-  std::future< types::Message > msg = promise.get_future();
-  asio::post(ioContext_, [this, chatId, &text, &promise]
+  nlohmann::json body = {
+    {"chat_id", chatId},
+    {"text", text}
+  };
+  if (!replyMarkup.keyboard.empty())
   {
-    std::string host = "api.telegram.org";
-    std::string path = "/bot" + token_ + "/sendMessage";
-    nlohmann::json body = {
-      {"chat_id", chatId},
-      {"text", text}
-    };
+    body["reply_markup"] = replyMarkup;
+  }
+  http::response< http::string_body > response = sendRequest(body, "/sendMessage");
+  return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
+}
 
-    asio::ip::tcp::resolver resolver(ioContext_);
-    asio::ssl::stream< asio::ip::tcp::socket > socket(ioContext_, sslContext_);
+types::Message cppbot::Bot::editMessageText(size_t chatId, size_t messageId, const std::string& text)
+{
+  nlohmann::json body = {
+    {"chat_id", chatId},
+    {"message_id", messageId},
+    {"text", text}
+  };
+  http::response< http::string_body > response = sendRequest(body, "/editMessageText");
+  return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
+}
 
-    try
-    {
-      if (!SSL_set_tlsext_host_name(socket.native_handle(), host.c_str()))
-      {
-        throw boost::system::system_error(::ERR_get_error(), asio::error::get_ssl_category());
-      }
+bool cppbot::Bot::deleteMessage(size_t chatId, size_t messageId)
+{
+  nlohmann::json body = {
+    {"chat_id", chatId},
+    {"message_id", messageId}
+  };
+  http::response< http::string_body > response = sendRequest(body, "/deleteMessage");
+  return nlohmann::json::parse(response.body())["result"].template get< bool >();
+}
 
-      auto const results = resolver.resolve(host, "443");
-      asio::connect(socket.next_layer(), results.begin(), results.end());
-
-      socket.handshake(asio::ssl::stream_base::client);
-
-      http::request< http::string_body > req{http::verb::post, path, 11};
-      req.set(http::field::host, host);
-      req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
-      req.set(http::field::content_type, "application/json");
-      req.body() = body.dump();
-      req.prepare_payload();
-
-      http::write(socket, req);
-
-      beast::flat_buffer buffer;
-      http::response< http::string_body > res;
-      http::read(socket, buffer, res);
-
-      promise.set_value(nlohmann::json::parse(res.body())["result"].template get< types::Message >());
-    }
-    catch (std::exception const& e)
-    {
-      std::cerr << "Error: " << e.what() << std::endl;
-      promise.set_value(types::Message());
-    }
-  });
-  return msg.get();
+bool cppbot::Bot::answerCallbackQuery(size_t queryId, const std::string& text, bool showAlert,
+ const std::string& url, size_t cacheTime)
+{
+  nlohmann::json body = {
+    {"callback_query_id", std::to_string(queryId)},
+    {"show_alert", showAlert},
+    {"cache_time", cacheTime}
+  };
+  if (text != "")
+  {
+    body["text"] = text;
+  }
+  if (url != "")
+  {
+    body["url"] = url;
+  }
+  http::response< http::string_body > response = sendRequest(body, "/answerCallbackQuery");
+  return nlohmann::json::parse(response.body())["result"].template get< bool >();
 }
 
 void cppbot::Bot::stop()
@@ -132,9 +137,15 @@ void cppbot::Bot::fetchUpdates()
         lastUpdateId = update["update_id"];
         if (update.contains("message"))
         {
-          std::lock_guard< std::mutex > lock(queueMutex_);
+          std::lock_guard< std::mutex > lock(messageQueueMutex_);
           messageQueue_.push(update["message"].template get< types::Message >());
-          queueCondition_.notify_one();
+          messageQueueCondition_.notify_one();
+        }
+        if (update.contains("callback_query"))
+        {
+          std::lock_guard< std::mutex > lock(queryQueueMutex_);
+          queryQueue_.push(update["callback_query"].template get< types::CallbackQuery >());
+          queryQueueCondition_.notify_one();
         }
       }
     }
@@ -147,12 +158,50 @@ void cppbot::Bot::fetchUpdates()
   }
 }
 
+http::response< http::string_body > cppbot::Bot::sendRequest(const nlohmann::json& body, const std::string& endpoint)
+{
+  std::promise< http::response< http::string_body > > promise;
+  std::future< http::response< http::string_body > > response = promise.get_future();
+  asio::post(ioContext_, [this, &body, &endpoint, &promise]
+  {
+    std::string host = "api.telegram.org";
+    std::string path = "/bot" + token_ + endpoint;
+    asio::ip::tcp::resolver resolver(ioContext_);
+    asio::ssl::stream< asio::ip::tcp::socket > socket(ioContext_, sslContext_);
+
+    if (!SSL_set_tlsext_host_name(socket.native_handle(), host.c_str()))
+    {
+      throw boost::system::system_error(::ERR_get_error(), asio::error::get_ssl_category());
+    }
+
+    auto const endpoints = resolver.resolve(host, "443");
+    asio::connect(socket.next_layer(), endpoints.begin(), endpoints.end());
+
+    socket.handshake(asio::ssl::stream_base::client);
+
+    http::request< http::string_body > req{http::verb::post, path, 11};
+    req.set(http::field::host, host);
+    req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+    req.set(http::field::content_type, "application/json");
+    req.body() = body.dump();
+    req.prepare_payload();
+
+    http::write(socket, req);
+
+    beast::flat_buffer buffer;
+    http::response< http::string_body > res;
+    http::read(socket, buffer, res);
+    promise.set_value(res);
+  });
+  return response.get();
+}
+
 void cppbot::Bot::processMessages()
 {
   while (isRunning_)
   {
-    std::unique_lock< std::mutex > lock(queueMutex_);
-    queueCondition_.wait(lock, [this]
+    std::unique_lock< std::mutex > lock(messageQueueMutex_);
+    messageQueueCondition_.wait(lock, [this]
     {
       return !messageQueue_.empty();
     });
@@ -165,6 +214,30 @@ void cppbot::Bot::processMessages()
     try
     {
       (*mh_).processMessage(msg, state);
+    }
+    catch (const std::exception& e)
+    {
+      std::cerr << e.what() << '\n';
+    }
+  }
+}
+
+void cppbot::Bot::processCallbackQueries()
+{
+  while (isRunning_)
+  {
+    std::unique_lock< std::mutex > lock(queryQueueMutex_);
+    queryQueueCondition_.wait(lock, [this]
+    {
+      return !queryQueue_.empty();
+    });
+    types::CallbackQuery query = queryQueue_.front();
+    queryQueue_.pop();
+    lock.unlock();
+
+    try
+    {
+      (*qh_).processCallbackQuery(query);
     }
     catch (const std::exception& e)
     {

@@ -2,6 +2,66 @@
 
 using json = nlohmann::json;
 
+
+// InlineKeyboard
+types::InlineKeyboardButton::InlineKeyboardButton(const std::string& text, const std::string& callbackData,
+ const std::string& url)
+{
+  this->text = text;
+  this->callbackData = callbackData;
+  this->url = url;
+}
+
+types::InlineKeyboardMarkup::InlineKeyboardMarkup(const keyboard_t& keyboard)
+{
+  this->keyboard = keyboard;
+}
+
+void types::to_json(json& j, const types::InlineKeyboardButton& button)
+{
+  j["text"] = button.text;
+  if (button.callbackData != "")
+  {
+    j["callback_data"] = button.callbackData;
+  }
+  if (button.url != "")
+  {
+    j["url"] = button.url;
+  }
+}
+
+void types::from_json(const json& j, types::InlineKeyboardButton& button)
+{
+  j.at("text").get_to(button.text);
+  if (j.contains("callback_data"))
+  {
+    j.at("callback_data").get_to(button.callbackData);
+  }
+  if (j.contains("url"))
+  {
+    j.at("url").get_to(button.callbackData);
+  }
+}
+
+void types::to_json(json& j, const types::InlineKeyboardMarkup& keyboard)
+{
+  j["inline_keyboard"] = keyboard.keyboard;
+}
+
+void types::from_json(const json& j, types::InlineKeyboardMarkup& keyboard)
+{
+  for (const auto& row : j.at("inline_keyboard"))
+  {
+    keyboard.keyboard.push_back(std::vector< types::InlineKeyboardButton >());
+    for (const auto& button : row)
+    {
+      keyboard.keyboard[keyboard.keyboard.size() - 1].push_back(types::InlineKeyboardButton{});
+      size_t buttonsLen = keyboard.keyboard[keyboard.keyboard.size() - 1].size();
+      from_json(button, keyboard.keyboard[keyboard.keyboard.size() - 1][buttonsLen - 1]);
+    }
+  }
+}
+
 // User
 void types::to_json(json& j, const types::User& user)
 {
@@ -69,15 +129,60 @@ void types::to_json(json& j, const types::Message& msg)
     {"chat", chat},
     {"text", msg.text}
   };
+  if (!msg.replyMarkup.keyboard.empty())
+  {
+    j["reply_markup"] = msg.replyMarkup;
+  }
 }
 
 void types::from_json(const json& j, types::Message& msg)
 {
   j.at("message_id").get_to(msg.id);
-  from_json(j.at("from"), msg.from);
+  if (j.contains("from"))
+  {
+    from_json(j.at("from"), msg.from);
+  }
   from_json(j.at("chat"), msg.chat);
   if (j.contains("text"))
   {
     j.at("text").get_to(msg.text);
+  }
+  if (j.contains("reply_markup"))
+  {
+    from_json(j.at("reply_markup"), msg.replyMarkup);
+  }
+}
+
+// CallbackQuery
+void types::to_json(json& j, const types::CallbackQuery& query)
+{
+  json from;
+  json message;
+  to_json(from, query.from);
+  to_json(message, query.message);
+  j = json{
+    {"id", std::to_string(query.id)},
+    {"from", from},
+    {"message", message},
+    {"data", query.data}
+  };
+}
+
+void types::from_json(const json& j, types::CallbackQuery& query)
+{
+  std::string stringId;
+  j.at("id").get_to(stringId);
+  query.id = std::stoull(stringId);
+  if (j.contains("from"))
+  {
+    from_json(j.at("from"), query.from);
+  }
+  if (j.contains("message"))
+  {
+    from_json(j.at("message"), query.message);
+  }
+  if (j.contains("data"))
+  {
+    j.at("data").get_to(query.data);
   }
 }

@@ -51,3 +51,34 @@ void handlers::MessageHandler::processMessage(const types::Message& msg, states:
     }
   }
 }
+
+void handlers::CallbackQueryHandler::addHandler(const std::string& callData, handler_t handler, bool allowPartialMatch)
+{
+  if (!allowPartialMatch)
+  {
+    handlers_[callData] = handler;
+  }
+  else
+  {
+    partialMatchHandlers_[callData] = handler;
+  }
+}
+
+void handlers::CallbackQueryHandler::processCallbackQuery(const types::CallbackQuery& query) const
+{
+  try
+  {
+    handlers_.at(query.data)(query);
+  }
+  catch (const std::out_of_range&)
+  {
+    auto it = partialMatchHandlers_.cbegin();
+    while (query.data[0] <= (*it).first[0])
+    {
+      if (((*it).first.size() >= query.data.size()) && ((*it).first.find(query.data) == 0))
+      {
+        (*it).second(query);
+      }
+    }
+  }
+}
