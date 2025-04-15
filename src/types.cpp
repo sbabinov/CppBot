@@ -214,3 +214,58 @@ std::string types::InputFile::asStringBytes() const
 {
   return strBytes_;
 }
+
+types::InputMedia::InputMedia(types::MediaType mediaType, const std::string& path)
+{
+  std::ifstream file(path, std::ios::binary);
+  if (!file)
+  {
+    throw std::runtime_error("Cannot open file: " + path);
+  }
+
+  switch (mediaType)
+  {
+  case PHOTO:
+    type_ = "photo";
+    break;
+  case DOCUMENT:
+    type_ = "document";
+    break;
+  case AUDIO:
+    type_ = "audio";
+    break;
+  case VIDEO:
+    type_ = "video";
+    break;
+  }
+  name_ = extractFileName(path);
+  strBytes_ = std::string(std::istreambuf_iterator< char >(file), std::istreambuf_iterator< char >());
+}
+
+types::InputMediaPhoto::InputMediaPhoto(const std::string& path):
+  types::InputMedia(types::MediaType::PHOTO, path)
+{}
+
+types::InputMediaPhoto::InputMediaPhoto(const std::string& path, bool hasSpoiler):
+  types::InputMediaPhoto(path)
+{
+  hasSpoiler_ = hasSpoiler;
+}
+
+types::InputMediaDocument::InputMediaDocument(const std::string& path):
+  types::InputMedia(types::MediaType::DOCUMENT, path)
+{}
+
+types::InputMediaAudio::InputMediaAudio(const std::string& path):
+  types::InputMedia(types::MediaType::AUDIO, path)
+{}
+
+types::InputMediaVideo::InputMediaVideo(const std::string& path):
+  types::InputMedia(types::MediaType::VIDEO, path)
+{}
+
+types::InputMediaVideo::InputMediaVideo(const std::string& path, bool hasSpoiler):
+  types::InputMediaVideo(path)
+{
+  hasSpoiler_ = hasSpoiler;
+}

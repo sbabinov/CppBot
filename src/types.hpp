@@ -84,6 +84,50 @@ namespace types
     std::string name_;
     std::string strBytes_;
   };
+
+  enum MediaType {
+    PHOTO,
+    DOCUMENT,
+    AUDIO,
+    VIDEO
+  };
+
+  class InputMedia
+  {
+   public:
+    InputMedia(MediaType mediaType, const std::string& path);
+   protected:
+    std::string name_;
+    std::string type_;
+    std::string strBytes_;
+    bool hasSpoiler_;
+  };
+
+  class InputMediaPhoto: public InputMedia
+  {
+   public:
+    InputMediaPhoto(const std::string& path);
+    InputMediaPhoto(const std::string& path, bool hasSpoiler);
+  };
+
+  class InputMediaDocument: public InputMedia
+  {
+   public:
+    InputMediaDocument(const std::string& path);
+  };
+
+  class InputMediaAudio: public InputMedia
+  {
+   public:
+    InputMediaAudio(const std::string& path);
+  };
+
+  class InputMediaVideo: public InputMedia
+  {
+   public:
+    InputMediaVideo(const std::string& path);
+    InputMediaVideo(const std::string& path, bool hasSpoiler);
+  };
 }
 
 #endif
