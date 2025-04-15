@@ -78,8 +78,10 @@ namespace types
   {
    public:
     InputFile(const std::string& path);
+    std::string name() const;
     std::string asStringBytes() const;
    private:
+    std::string name_;
     std::string strBytes_;
   };
 }

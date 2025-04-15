@@ -189,6 +189,11 @@ void types::from_json(const json& j, types::CallbackQuery& query)
 }
 
 // Files
+std::string extractFileName(const std::string& path)
+{
+  return path.substr(path.find_last_of("/\\") + 1);
+}
+
 types::InputFile::InputFile(const std::string& path)
 {
   std::ifstream file(path, std::ios::binary);
@@ -196,7 +201,13 @@ types::InputFile::InputFile(const std::string& path)
   {
     throw std::runtime_error("Cannot open file: " + path);
   }
+  name_ = extractFileName(path);
   strBytes_ = std::string(std::istreambuf_iterator< char >(file), std::istreambuf_iterator< char >());
+}
+
+std::string types::InputFile::name() const
+{
+  return name_;
 }
 
 std::string types::InputFile::asStringBytes() const
