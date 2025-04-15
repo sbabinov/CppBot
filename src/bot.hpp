@@ -39,6 +39,8 @@ namespace cppbot
       const std::string& url = "", size_t cacheTime = 0);
     types::Message sendPhoto          (size_t chatId, const types::InputFile& photo, const std::string& caption = "",
       const types::InlineKeyboardMarkup& replyMarkup = types::InlineKeyboardMarkup(), bool hasSpoiler = false);
+    types::Message sendDocument       (size_t chatId, const types::InputFile& document, const std::string& caption = "",
+      const types::InlineKeyboardMarkup& replyMarkup = types::InlineKeyboardMarkup());
    private:
     std::string token_;
     std::shared_ptr< handlers::MessageHandler > mh_;
@@ -63,6 +65,8 @@ namespace cppbot
     void fetchUpdates();
     http::response< http::string_body > sendRequest(const std::string& body, const std::string& endpoint,
       const std::vector< std::pair < http::field, std::string > >& additionalHeaders = {}, const std::string& contentType = "application/json");
+    types::Message sendFile(size_t chatId, const types::InputFile& file,
+      const std::string& fileType, const nlohmann::json& fields);
     void processMessages();
     void processCallbackQueries();
   };

@@ -119,30 +119,34 @@ types::Message cppbot::Bot::sendPhoto(size_t chatId, const types::InputFile& pho
   const types::InlineKeyboardMarkup& replyMarkup, bool hasSpoiler)
 {
   std::string boundary = generateBoundary();
-  nlohmann::json j;
-  j["chat_id"] = chatId;
+  nlohmann::json fields;
+  fields["chat_id"] = chatId;
   if (caption != "")
   {
-    j["caption"] = caption;
+    fields["caption"] = caption;
   }
   if (!replyMarkup.keyboard.empty())
   {
-    j["reply_markup"] = replyMarkup;
+    fields["reply_markup"] = replyMarkup;
   }
+  return sendFile(chatId, photo, "/sendPhoto", fields);
+}
 
-  std::string body = createMultipartBody(boundary, j, "image.jpg", "photo", photo);
-  http::response< http::string_body > response = sendRequest(
-    body,
-    "/sendPhoto",
-    {{http::field::content_length, std::to_string(body.size())}, {http::field::connection, "close"}},
-    "multipart/form-data; boundary=" + boundary
-  );
-  nlohmann::json jsonResponse = nlohmann::json::parse(response.body());
-  if (!jsonResponse["ok"])
+types::Message cppbot::Bot::sendDocument(size_t chatId, const types::InputFile& document,
+  const std::string& caption, const types::InlineKeyboardMarkup& replyMarkup)
+{
+  std::string boundary = generateBoundary();
+  nlohmann::json fields;
+  fields["chat_id"] = chatId;
+  if (caption != "")
   {
-    throw std::runtime_error(jsonResponse["description"]);
+    fields["caption"] = caption;
   }
-  return jsonResponse["result"].template get< types::Message >();
+  if (!replyMarkup.keyboard.empty())
+  {
+    fields["reply_markup"] = replyMarkup;
+  }
+  return sendFile(chatId, document, "/sendDocument", fields);
 }
 
 void cppbot::Bot::stop()
@@ -260,6 +264,36 @@ http::response< http::string_body > cppbot::Bot::sendRequest(const std::string& 
     promise.set_value(res);
   });
   return response.get();
+}
+
+types::Message cppbot::Bot::sendFile(size_t chatId, const types::InputFile& file,
+  const std::string& endpoint, const nlohmann::json& fields)
+{
+  std::string fileType = "";
+  if (endpoint == "/sendPhoto")
+  {
+    fileType = "photo";
+  }
+  else if (endpoint == "/sendDocument")
+  {
+    fileType = "document";
+  }
+
+  std::string boundary = generateBoundary();
+
+  std::string body = createMultipartBody(boundary, fields, "image.jpg", fileType, file);
+  http::response< http::string_body > response = sendRequest(
+    body,
+    endpoint,
+    {{http::field::content_length, std::to_string(body.size())}, {http::field::connection, "close"}},
+    "multipart/form-data; boundary=" + boundary
+  );
+  nlohmann::json jsonResponse = nlohmann::json::parse(response.body());
+  if (!jsonResponse["ok"])
+  {
+    throw std::runtime_error(jsonResponse["description"]);
+  }
+  return jsonResponse["result"].template get< types::Message >();
 }
 
 void cppbot::Bot::processMessages()
