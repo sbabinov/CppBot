@@ -215,7 +215,7 @@ std::string types::InputFile::asStringBytes() const
   return strBytes_;
 }
 
-types::InputMedia::InputMedia(types::MediaType mediaType, const std::string& path)
+types::InputMedia::InputMedia(types::MediaType mediaType, const std::string& path, const std::string& caption)
 {
   std::ifstream file(path, std::ios::binary);
   if (!file)
@@ -238,8 +238,35 @@ types::InputMedia::InputMedia(types::MediaType mediaType, const std::string& pat
     type_ = "video";
     break;
   }
-  name_ = extractFileName(path);
-  strBytes_ = std::string(std::istreambuf_iterator< char >(file), std::istreambuf_iterator< char >());
+  file_ = types::InputFile(path);
+  this->caption = caption;
+  hasSpoiler_ = false;
+}
+
+std::string types::InputMedia::type() const
+{
+  return type_;
+}
+
+types::InputFile types::InputMedia::file() const
+{
+  return file_;
+}
+
+void types::to_json(json& j, const types::InputMedia& media)
+{
+  j = json{
+    {"type", media.type_},
+    {"media", "attach://" + media.file_.name()}
+  };
+  if (media.caption != "")
+  {
+    j["caption"] = media.caption;
+  }
+  if (media.hasSpoiler_)
+  {
+    j["has_spoiler"] = true;
+  }
 }
 
 types::InputMediaPhoto::InputMediaPhoto(const std::string& path):

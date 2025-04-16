@@ -77,6 +77,7 @@ namespace types
   class InputFile
   {
    public:
+    InputFile() = default;
     InputFile(const std::string& path);
     std::string name() const;
     std::string asStringBytes() const;
@@ -95,13 +96,18 @@ namespace types
   class InputMedia
   {
    public:
-    InputMedia(MediaType mediaType, const std::string& path);
+    std::string caption;
+    InputMedia(MediaType mediaType, const std::string& path, const std::string& caption = "");
+    std::string type() const;
+    InputFile file() const;
+
+    friend void to_json(json& j, const InputMedia& query);
    protected:
-    std::string name_;
+    InputFile file_;
     std::string type_;
-    std::string strBytes_;
     bool hasSpoiler_;
   };
+  void to_json(json& j, const InputMedia& query);
 
   class InputMediaPhoto: public InputMedia
   {
