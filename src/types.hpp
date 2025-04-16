@@ -9,6 +9,12 @@ using json = nlohmann::json;
 
 namespace types
 {
+  struct Keyboard
+  {
+    Keyboard() = default;
+    virtual json toJson() const;
+  };
+
   struct InlineKeyboardButton
   {
     std::string text;
@@ -21,15 +27,46 @@ namespace types
   void to_json(json& j, const InlineKeyboardButton& button);
   void from_json(const json& j, InlineKeyboardButton& button);
 
-  struct InlineKeyboardMarkup
+  struct InlineKeyboardMarkup: public Keyboard
   {
     using keyboard_t = std::vector< std::vector< InlineKeyboardButton > >;
     keyboard_t keyboard;
     InlineKeyboardMarkup() = default;
     InlineKeyboardMarkup(const keyboard_t& keyboard);
+    virtual json toJson() const override;
   };
   void to_json(json& j, const InlineKeyboardMarkup& keyboard);
   void from_json(const json& j, InlineKeyboardMarkup& keyboard);
+
+  struct KeyboardButton
+  {
+    std::string text;
+    KeyboardButton() = default;
+    KeyboardButton(const std::string& text);
+  };
+  void to_json(json& j, const KeyboardButton& button);
+
+  struct ReplyKeyboardMarkup: public Keyboard
+  {
+    using keyboard_t = std::vector< std::vector< KeyboardButton > >;
+    keyboard_t keyboard;
+    bool isPersistent;
+    bool resizeKeyboard;
+    bool oneTimeKeyboard;
+    std::string inputFieldPlaceholder;
+    ReplyKeyboardMarkup() = default;
+    ReplyKeyboardMarkup(const keyboard_t& keyboard, bool isPersistent = false, bool resizeKeyboard = false,
+      bool oneTimeKeyboard = false, const std::string& placeholder = "");
+    virtual json toJson() const override;
+  };
+  void to_json(json& j, const types::ReplyKeyboardMarkup& keyboard);
+
+  struct ReplyKeyboardRemove: public Keyboard
+  {
+    ReplyKeyboardRemove() = default;
+    json toJson() const override;
+  };
+  void to_json(json& j, const types::ReplyKeyboardRemove& keyboard);
 
   struct User
   {

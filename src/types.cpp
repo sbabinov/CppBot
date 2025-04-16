@@ -5,17 +5,17 @@
 using json = nlohmann::json;
 
 // InlineKeyboard
+json types::Keyboard::toJson() const
+{
+  return json();
+}
+
 types::InlineKeyboardButton::InlineKeyboardButton(const std::string& text, const std::string& callbackData,
  const std::string& url)
 {
   this->text = text;
   this->callbackData = callbackData;
   this->url = url;
-}
-
-types::InlineKeyboardMarkup::InlineKeyboardMarkup(const keyboard_t& keyboard)
-{
-  this->keyboard = keyboard;
 }
 
 void types::to_json(json& j, const types::InlineKeyboardButton& button)
@@ -44,6 +44,16 @@ void types::from_json(const json& j, types::InlineKeyboardButton& button)
   }
 }
 
+types::InlineKeyboardMarkup::InlineKeyboardMarkup(const keyboard_t& keyboard)
+{
+  this->keyboard = keyboard;
+}
+
+json types::InlineKeyboardMarkup::toJson() const
+{
+  return *this;
+}
+
 void types::to_json(json& j, const types::InlineKeyboardMarkup& keyboard)
 {
   j["inline_keyboard"] = keyboard.keyboard;
@@ -61,6 +71,51 @@ void types::from_json(const json& j, types::InlineKeyboardMarkup& keyboard)
       from_json(button, keyboard.keyboard[keyboard.keyboard.size() - 1][buttonsLen - 1]);
     }
   }
+}
+
+// ReplyKeyboard
+types::KeyboardButton::KeyboardButton(const std::string& text)
+{
+  this->text = text;
+}
+
+void types::to_json(json& j, const types::KeyboardButton& button)
+{
+  j["text"] = button.text;
+}
+
+types::ReplyKeyboardMarkup::ReplyKeyboardMarkup(const keyboard_t& keyboard, bool isPersistent,
+  bool resizeKeyboard, bool oneTimeKeyboard, const std::string& placeholder)
+{
+  this->keyboard = keyboard;
+  this->isPersistent = isPersistent;
+  this->resizeKeyboard = resizeKeyboard;
+  this->oneTimeKeyboard = oneTimeKeyboard;
+  this->inputFieldPlaceholder = placeholder;
+}
+
+json types::ReplyKeyboardMarkup::toJson() const
+{
+  return *this;
+}
+
+void types::to_json(json& j, const types::ReplyKeyboardMarkup& keyboard)
+{
+  j["keyboard"] = keyboard.keyboard;
+  j["is_persistent"] = keyboard.isPersistent;
+  j["resize_keyboard"] = keyboard.resizeKeyboard;
+  j["one_time_keyboard"] = keyboard.oneTimeKeyboard;
+  j["input_field_placeholder"] = keyboard.inputFieldPlaceholder;
+}
+
+json types::ReplyKeyboardRemove::toJson() const
+{
+  return *this;
+}
+
+void types::to_json(json& j, const types::ReplyKeyboardRemove& keyboard)
+{
+  j["remove_keyboard"] = true;
 }
 
 // User
