@@ -1,20 +1,21 @@
 #include "types.hpp"
+#include <fstream>
+#include <exception>
 
 using json = nlohmann::json;
 
-
 // InlineKeyboard
+json types::Keyboard::toJson() const
+{
+  return json();
+}
+
 types::InlineKeyboardButton::InlineKeyboardButton(const std::string& text, const std::string& callbackData,
  const std::string& url)
 {
   this->text = text;
   this->callbackData = callbackData;
   this->url = url;
-}
-
-types::InlineKeyboardMarkup::InlineKeyboardMarkup(const keyboard_t& keyboard)
-{
-  this->keyboard = keyboard;
 }
 
 void types::to_json(json& j, const types::InlineKeyboardButton& button)
@@ -43,6 +44,16 @@ void types::from_json(const json& j, types::InlineKeyboardButton& button)
   }
 }
 
+types::InlineKeyboardMarkup::InlineKeyboardMarkup(const keyboard_t& keyboard)
+{
+  this->keyboard = keyboard;
+}
+
+json types::InlineKeyboardMarkup::toJson() const
+{
+  return *this;
+}
+
 void types::to_json(json& j, const types::InlineKeyboardMarkup& keyboard)
 {
   j["inline_keyboard"] = keyboard.keyboard;
@@ -60,6 +71,51 @@ void types::from_json(const json& j, types::InlineKeyboardMarkup& keyboard)
       from_json(button, keyboard.keyboard[keyboard.keyboard.size() - 1][buttonsLen - 1]);
     }
   }
+}
+
+// ReplyKeyboard
+types::KeyboardButton::KeyboardButton(const std::string& text)
+{
+  this->text = text;
+}
+
+void types::to_json(json& j, const types::KeyboardButton& button)
+{
+  j["text"] = button.text;
+}
+
+types::ReplyKeyboardMarkup::ReplyKeyboardMarkup(const keyboard_t& keyboard, bool isPersistent,
+  bool resizeKeyboard, bool oneTimeKeyboard, const std::string& placeholder)
+{
+  this->keyboard = keyboard;
+  this->isPersistent = isPersistent;
+  this->resizeKeyboard = resizeKeyboard;
+  this->oneTimeKeyboard = oneTimeKeyboard;
+  this->inputFieldPlaceholder = placeholder;
+}
+
+json types::ReplyKeyboardMarkup::toJson() const
+{
+  return *this;
+}
+
+void types::to_json(json& j, const types::ReplyKeyboardMarkup& keyboard)
+{
+  j["keyboard"] = keyboard.keyboard;
+  j["is_persistent"] = keyboard.isPersistent;
+  j["resize_keyboard"] = keyboard.resizeKeyboard;
+  j["one_time_keyboard"] = keyboard.oneTimeKeyboard;
+  j["input_field_placeholder"] = keyboard.inputFieldPlaceholder;
+}
+
+json types::ReplyKeyboardRemove::toJson() const
+{
+  return *this;
+}
+
+void types::to_json(json& j, const types::ReplyKeyboardRemove& keyboard)
+{
+  j["remove_keyboard"] = true;
 }
 
 // User
@@ -185,4 +241,113 @@ void types::from_json(const json& j, types::CallbackQuery& query)
   {
     j.at("data").get_to(query.data);
   }
+}
+
+// Files
+std::string extractFileName(const std::string& path)
+{
+  return path.substr(path.find_last_of("/\\") + 1);
+}
+
+types::InputFile::InputFile(const std::string& path)
+{
+  std::ifstream file(path, std::ios::binary);
+  if (!file)
+  {
+    throw std::runtime_error("Cannot open file: " + path);
+  }
+  name_ = extractFileName(path);
+  strBytes_ = std::string(std::istreambuf_iterator< char >(file), std::istreambuf_iterator< char >());
+}
+
+std::string types::InputFile::name() const
+{
+  return name_;
+}
+
+std::string types::InputFile::asStringBytes() const
+{
+  return strBytes_;
+}
+
+types::InputMedia::InputMedia(types::MediaType mediaType, const std::string& path, const std::string& caption)
+{
+  std::ifstream file(path, std::ios::binary);
+  if (!file)
+  {
+    throw std::runtime_error("Cannot open file: " + path);
+  }
+
+  switch (mediaType)
+  {
+  case PHOTO:
+    type_ = "photo";
+    break;
+  case DOCUMENT:
+    type_ = "document";
+    break;
+  case AUDIO:
+    type_ = "audio";
+    break;
+  case VIDEO:
+    type_ = "video";
+    break;
+  }
+  file_ = types::InputFile(path);
+  this->caption = caption;
+  hasSpoiler_ = false;
+}
+
+std::string types::InputMedia::type() const
+{
+  return type_;
+}
+
+types::InputFile types::InputMedia::file() const
+{
+  return file_;
+}
+
+void types::to_json(json& j, const types::InputMedia& media)
+{
+  j = json{
+    {"type", media.type_},
+    {"media", "attach://" + media.file_.name()}
+  };
+  if (media.caption != "")
+  {
+    j["caption"] = media.caption;
+  }
+  if (media.hasSpoiler_)
+  {
+    j["has_spoiler"] = true;
+  }
+}
+
+types::InputMediaPhoto::InputMediaPhoto(const std::string& path):
+  types::InputMedia(types::MediaType::PHOTO, path)
+{}
+
+types::InputMediaPhoto::InputMediaPhoto(const std::string& path, bool hasSpoiler):
+  types::InputMediaPhoto(path)
+{
+  hasSpoiler_ = hasSpoiler;
+}
+
+types::InputMediaDocument::InputMediaDocument(const std::string& path):
+  types::InputMedia(types::MediaType::DOCUMENT, path)
+{}
+
+types::InputMediaAudio::InputMediaAudio(const std::string& path):
+  types::InputMedia(types::MediaType::AUDIO, path)
+{}
+
+types::InputMediaVideo::InputMediaVideo(const std::string& path):
+  types::InputMedia(types::MediaType::VIDEO, path)
+{}
+
+types::InputMediaVideo::InputMediaVideo(const std::string& path, bool hasSpoiler):
+  types::InputMediaVideo(path)
+{
+  hasSpoiler_ = hasSpoiler;
 }

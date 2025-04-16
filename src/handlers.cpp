@@ -73,12 +73,13 @@ void handlers::CallbackQueryHandler::processCallbackQuery(const types::CallbackQ
   catch (const std::out_of_range&)
   {
     auto it = partialMatchHandlers_.cbegin();
-    while (query.data[0] <= (*it).first[0])
+    while ((it != partialMatchHandlers_.cend()) && (query.data[0] <= (*it).first[0]))
     {
-      if (((*it).first.size() >= query.data.size()) && ((*it).first.find(query.data) == 0))
+      if (((*it).first.size() <= query.data.size()) && (query.data.find((*it).first) == 0))
       {
         (*it).second(query);
       }
+      ++it;
     }
   }
 }
