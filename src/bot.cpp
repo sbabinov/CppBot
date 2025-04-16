@@ -55,15 +55,17 @@ void cppbot::Bot::start()
   processMessages();
 }
 
-types::Message cppbot::Bot::sendMessage(size_t chatId, const std::string& text, const types::InlineKeyboardMarkup replyMarkup)
+types::Message cppbot::Bot::sendMessage(size_t chatId, const std::string& text,
+  const types::Keyboard& replyMarkup)
 {
   nlohmann::json body = {
     {"chat_id", chatId},
     {"text", text}
   };
-  if (!replyMarkup.keyboard.empty())
+  nlohmann::json jsonReplyMarkup = replyMarkup.toJson();
+  if (!jsonReplyMarkup.empty())
   {
-    body["reply_markup"] = replyMarkup;
+    body["reply_markup"] = replyMarkup.toJson();
   }
   http::response< http::string_body > response = sendRequest(body.dump(), "/sendMessage");
   return nlohmann::json::parse(response.body())["result"].template get< types::Message >();

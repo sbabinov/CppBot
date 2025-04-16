@@ -32,7 +32,7 @@ namespace cppbot
     void stop();
 
     types::Message sendMessage           (size_t chatId, const std::string& text,
-      const types::InlineKeyboardMarkup replyMarkup = {});
+      const types::Keyboard& replyMarkup = {});
 
     types::Message editMessageText       (size_t chatId, size_t messageId, const std::string& text);
     types::Message editMessageCaption    (size_t chatId, size_t messageId, const std::string& caption,
