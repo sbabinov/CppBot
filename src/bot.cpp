@@ -112,6 +112,18 @@ types::Message cppbot::Bot::editMessageMedia(size_t chatId, size_t messageId, co
   return updateFile(media, fields);
 }
 
+types::Message cppbot::Bot::editMessageReplyMarkup(size_t chatId, size_t messageId,
+  const types::InlineKeyboardMarkup& replyMarkup)
+{
+  nlohmann::json body = {
+    {"chat_id", chatId},
+    {"message_id", messageId},
+    {"reply_markup", replyMarkup}
+  };
+  http::response< http::string_body > response = sendRequest(body.dump(), "/editMessageReplyMarkup");
+  return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
+}
+
 bool cppbot::Bot::deleteMessage(size_t chatId, size_t messageId)
 {
   nlohmann::json body = {

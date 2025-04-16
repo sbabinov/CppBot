@@ -31,27 +31,29 @@ namespace cppbot
     void start();
     void stop();
 
-    types::Message sendMessage        (size_t chatId, const std::string& text,
+    types::Message sendMessage           (size_t chatId, const std::string& text,
       const types::InlineKeyboardMarkup replyMarkup = {});
 
-    types::Message editMessageText    (size_t chatId, size_t messageId, const std::string& text);
-    types::Message editMessageCaption (size_t chatId, size_t messageId, const std::string& caption,
+    types::Message editMessageText       (size_t chatId, size_t messageId, const std::string& text);
+    types::Message editMessageCaption    (size_t chatId, size_t messageId, const std::string& caption,
       const types::InlineKeyboardMarkup& replyMarkup = {});
-    types::Message editMessageMedia   (size_t chatId, size_t messageId, const types::InputMedia& media,
+    types::Message editMessageMedia      (size_t chatId, size_t messageId, const types::InputMedia& media,
       const types::InlineKeyboardMarkup& replyMarkup = {});
+    types::Message editMessageReplyMarkup(size_t chatId, size_t messageId,
+      const types::InlineKeyboardMarkup& replyMarkup);
 
-    bool           deleteMessage      (size_t chatId, size_t messageId);
+    bool           deleteMessage(size_t chatId, size_t messageId);
 
     bool           answerCallbackQuery(size_t queryId, const std::string& text = "", bool showAlert = false,
       const std::string& url = "", size_t cacheTime = 0);
 
-    types::Message sendPhoto          (size_t chatId, const types::InputFile& photo, const std::string& caption = "",
+    types::Message sendPhoto   (size_t chatId, const types::InputFile& photo, const std::string& caption = "",
       const types::InlineKeyboardMarkup& replyMarkup = {}, bool hasSpoiler = false);
-    types::Message sendDocument       (size_t chatId, const types::InputFile& document, const std::string& caption = "",
+    types::Message sendDocument(size_t chatId, const types::InputFile& document, const std::string& caption = "",
       const types::InlineKeyboardMarkup& replyMarkup = {});
-    types::Message sendAudio          (size_t chatId, const types::InputFile& audio, const std::string& caption = "",
+    types::Message sendAudio   (size_t chatId, const types::InputFile& audio, const std::string& caption = "",
       const types::InlineKeyboardMarkup& replyMarkup = {});
-    types::Message sendVideo          (size_t chatId, const types::InputFile& video, const std::string& caption = "",
+    types::Message sendVideo   (size_t chatId, const types::InputFile& video, const std::string& caption = "",
       const types::InlineKeyboardMarkup& replyMarkup = {}, bool hasSpoiler = false);
    private:
     std::string token_;
