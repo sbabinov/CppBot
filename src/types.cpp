@@ -351,3 +351,34 @@ types::InputMediaVideo::InputMediaVideo(const std::string& path, bool hasSpoiler
 {
   hasSpoiler_ = hasSpoiler;
 }
+
+// File types
+void types::from_json(const json& j, types::PhotoSize& photo)
+{
+  j.at("file_id").get_to(photo.fileId);
+  j.at("file_unique_id").get_to(photo.fileUniqueId);
+  j.at("width").get_to(photo.width);
+  j.at("height").get_to(photo.height);
+}
+
+void types::from_json(const json& j, types::Document& document)
+{
+  j.at("file_id").get_to(document.fileId);
+  j.at("file_unique_id").get_to(document.fileUniqueId);
+}
+
+void types::from_json(const json& j, types::Audio& audio)
+{
+  j.at("file_id").get_to(audio.fileId);
+  j.at("file_unique_id").get_to(audio.fileUniqueId);
+  j.at("duration").get_to(audio.duration);
+}
+
+void types::from_json(const json& j, types::Video& video)
+{
+  j.at("file_id").get_to(video.fileId);
+  j.at("file_unique_id").get_to(video.fileUniqueId);
+  j.at("width").get_to(video.width);
+  j.at("height").get_to(video.height);
+  j.at("duration").get_to(video.duration);
+}

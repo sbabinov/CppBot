@@ -171,6 +171,37 @@ namespace types
     InputMediaVideo(const std::string& path);
     InputMediaVideo(const std::string& path, bool hasSpoiler);
   };
+
+  struct File
+  {
+    size_t fileId;
+    size_t fileUniqueId;
+  };
+
+  struct PhotoSize: public File
+  {
+    size_t width;
+    size_t height;
+  };
+  void from_json(const json& j, PhotoSize& photo);
+
+  struct Document: public File
+  {};
+  void from_json(const json& j, Document& document);
+
+  struct Audio: public File
+  {
+    size_t duration;
+  };
+  void from_json(const json& j, Audio& audio);
+
+  struct Video: public File
+  {
+    size_t width;
+    size_t height;
+    size_t duration;
+  };
+  void from_json(const json& j, Video& video);
 }
 
 #endif
