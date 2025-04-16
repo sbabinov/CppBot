@@ -14,8 +14,8 @@ std::string generateBoundary()
   return "----CppbotBoundary" + std::to_string(rand());
 }
 
-std::string createMultipartBody(const std::string& boundary, nlohmann::json fields,
-  const std::string& fileType, const types::InputFile& file)
+std::string createMultipartBody(const std::string& boundary, const nlohmann::json& fields,
+  const std::string& formDataName, const types::InputFile& file, bool isEditing = false)
 {
   std::string body = "";
 
@@ -27,7 +27,7 @@ std::string createMultipartBody(const std::string& boundary, nlohmann::json fiel
   }
 
   body += "--" + boundary + "\r\n";
-  body += "Content-Disposition: form-data; name=\"" + fileType + "\"; filename=\"" + file.name() + "\"\r\n";
+  body += "Content-Disposition: form-data; name=\"" + formDataName + "\"; filename=\"" + file.name() + "\"\r\n";
   body += "Content-type: application/octet-stream\r\n\r\n";
   body += file.asStringBytes() + "\r\n";
 
@@ -97,6 +97,21 @@ types::Message cppbot::Bot::editMessageCaption(size_t chatId, size_t messageId, 
   return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
 }
 
+types::Message cppbot::Bot::editMessageMedia(size_t chatId, size_t messageId, const types::InputMedia& media,
+  const types::InlineKeyboardMarkup& replyMarkup)
+{
+  std::string boundary = generateBoundary();
+  nlohmann::json fields;
+  fields["chat_id"] = chatId;
+  fields["message_id"] = messageId;
+  fields["media"] = media;
+  if (!replyMarkup.keyboard.empty())
+  {
+    fields["reply_markup"] = replyMarkup;
+  }
+  return updateFile(media, fields);
+}
+
 bool cppbot::Bot::deleteMessage(size_t chatId, size_t messageId)
 {
   nlohmann::json body = {
@@ -145,7 +160,7 @@ types::Message cppbot::Bot::sendPhoto(size_t chatId, const types::InputFile& pho
   {
     fields["has_spoiler"] = hasSpoiler;
   }
-  return sendFile(chatId, photo, "/sendPhoto", fields);
+  return sendFile(photo, "/sendPhoto", fields);
 }
 
 types::Message cppbot::Bot::sendDocument(size_t chatId, const types::InputFile& document,
@@ -162,7 +177,7 @@ types::Message cppbot::Bot::sendDocument(size_t chatId, const types::InputFile& 
   {
     fields["reply_markup"] = replyMarkup;
   }
-  return sendFile(chatId, document, "/sendDocument", fields);
+  return sendFile(document, "/sendDocument", fields);
 }
 
 types::Message cppbot::Bot::sendAudio(size_t chatId, const types::InputFile& audio, const std::string& caption,
@@ -179,7 +194,7 @@ types::Message cppbot::Bot::sendAudio(size_t chatId, const types::InputFile& aud
   {
     fields["reply_markup"] = replyMarkup;
   }
-  return sendFile(chatId, audio, "/sendAudio", fields);
+  return sendFile(audio, "/sendAudio", fields);
 }
 
 types::Message cppbot::Bot::sendVideo(size_t chatId, const types::InputFile& video, const std::string& caption,
@@ -200,7 +215,7 @@ types::Message cppbot::Bot::sendVideo(size_t chatId, const types::InputFile& vid
   {
     fields["has_spoiler"] = hasSpoiler;
   }
-  return sendFile(chatId, video, "/sendVideo", fields);
+  return sendFile(video, "/sendVideo", fields);
 }
 
 void cppbot::Bot::stop()
@@ -327,8 +342,8 @@ http::response< http::string_body > cppbot::Bot::sendRequest(const std::string& 
   return result;
 }
 
-types::Message cppbot::Bot::sendFile(size_t chatId, const types::InputFile& file,
-  const std::string& endpoint, const nlohmann::json& fields)
+types::Message cppbot::Bot::sendFile(const types::InputFile& file, const std::string& endpoint,
+  const nlohmann::json& fields)
 {
   std::string fileType = "";
   if (endpoint == "/sendPhoto")
@@ -358,11 +373,21 @@ types::Message cppbot::Bot::sendFile(size_t chatId, const types::InputFile& file
     "multipart/form-data; boundary=" + boundary
   );
   nlohmann::json jsonResponse = nlohmann::json::parse(response.body());
-  if (!jsonResponse["ok"])
-  {
-    throw std::runtime_error(jsonResponse["description"]);
-  }
-  return jsonResponse["result"].template get< types::Message >();
+  return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
+}
+
+types::Message cppbot::Bot::updateFile(const types::InputMedia& media, const nlohmann::json& fields)
+{
+  std::string boundary = generateBoundary();
+
+  std::string body = createMultipartBody(boundary, fields, media.file().name(), media.file());
+  http::response< http::string_body > response = sendRequest(
+    body,
+    "/editMessageMedia",
+    {{http::field::content_length, std::to_string(body.size())}, {http::field::connection, "close"}},
+    "multipart/form-data; boundary=" + boundary
+  );
+  return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
 }
 
 void cppbot::Bot::processMessages()
