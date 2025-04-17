@@ -232,6 +232,15 @@ types::Message cppbot::Bot::sendVideo(size_t chatId, const types::InputFile& vid
   return sendFile(video, "/sendVideo", fields);
 }
 
+types::File cppbot::Bot::getFile(const std::string& fileId)
+{
+  nlohmann::json body = {
+    {"file_id", fileId}
+  };
+  http::response< http::string_body > response = sendRequest(body.dump(), "/getFile");
+  return nlohmann::json::parse(response.body())["result"].template get< types::File >();
+}
+
 void cppbot::Bot::stop()
 {
     isRunning_ = false;

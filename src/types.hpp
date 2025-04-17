@@ -13,7 +13,9 @@ namespace types
   {
     std::string fileId;
     std::string fileUniqueId;
+    std::string filePath;
   };
+  void from_json(const json& j, File& photo);
 
   struct PhotoSize: public File
   {

@@ -375,6 +375,16 @@ types::InputMediaVideo::InputMediaVideo(const std::string& path, bool hasSpoiler
 }
 
 // File types
+void types::from_json(const json& j, types::File& file)
+{
+  j.at("file_id").get_to(file.fileId);
+  j.at("file_unique_id").get_to(file.fileUniqueId);
+  if (j.contains("file_path"))
+  {
+    j.at("file_path").get_to(file.filePath);
+  }
+}
+
 void types::from_json(const json& j, types::PhotoSize& photo)
 {
   j.at("file_id").get_to(photo.fileId);

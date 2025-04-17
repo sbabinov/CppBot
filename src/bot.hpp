@@ -55,6 +55,8 @@ namespace cppbot
       const types::InlineKeyboardMarkup& replyMarkup = {});
     types::Message sendVideo   (size_t chatId, const types::InputFile& video, const std::string& caption = "",
       const types::InlineKeyboardMarkup& replyMarkup = {}, bool hasSpoiler = false);
+
+    types::File getFile(const std::string& fileId);
    private:
     std::string token_;
     std::shared_ptr< handlers::MessageHandler > mh_;
