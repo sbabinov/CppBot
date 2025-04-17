@@ -386,7 +386,6 @@ types::Message cppbot::Bot::sendFile(const types::InputFile& file, const std::st
     {{http::field::content_length, std::to_string(body.size())}, {http::field::connection, "close"}},
     "multipart/form-data; boundary=" + boundary
   );
-  nlohmann::json jsonResponse = nlohmann::json::parse(response.body());
   return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
 }
 

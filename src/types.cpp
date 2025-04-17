@@ -203,6 +203,28 @@ void types::from_json(const json& j, types::Message& msg)
   {
     j.at("text").get_to(msg.text);
   }
+  j.at("date").get_to(msg.date);
+  if (j.contains("photo"))
+  {
+    for (const auto& p : j["photo"])
+    {
+      PhotoSize photo;
+      from_json(p, photo);
+      msg.photo.push_back(photo);
+    }
+  }
+  if (j.contains("document"))
+  {
+    from_json(j, msg.document);
+  }
+  if (j.contains("audio"))
+  {
+    j.at("audio").get_to(msg.audio);
+  }
+  if (j.contains("video"))
+  {
+    j.at("video").get_to(msg.video);
+  }
   if (j.contains("reply_markup"))
   {
     from_json(j.at("reply_markup"), msg.replyMarkup);

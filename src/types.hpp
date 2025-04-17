@@ -9,6 +9,37 @@ using json = nlohmann::json;
 
 namespace types
 {
+  struct File
+  {
+    std::string fileId;
+    std::string fileUniqueId;
+  };
+
+  struct PhotoSize: public File
+  {
+    size_t width;
+    size_t height;
+  };
+  void from_json(const json& j, PhotoSize& photo);
+
+  struct Document: public File
+  {};
+  void from_json(const json& j, Document& document);
+
+  struct Audio: public File
+  {
+    size_t duration;
+  };
+  void from_json(const json& j, Audio& audio);
+
+  struct Video: public File
+  {
+    size_t width;
+    size_t height;
+    size_t duration;
+  };
+  void from_json(const json& j, Video& video);
+
   struct Keyboard
   {
     Keyboard() = default;
@@ -96,6 +127,11 @@ namespace types
     User from;
     Chat chat;
     std::string text;
+    size_t date;
+    std::vector< PhotoSize > photo;
+    Document document;
+    Audio audio;
+    Video video;
     InlineKeyboardMarkup replyMarkup;
   };
   void to_json(json& j, const Message& msg);
@@ -171,37 +207,6 @@ namespace types
     InputMediaVideo(const std::string& path);
     InputMediaVideo(const std::string& path, bool hasSpoiler);
   };
-
-  struct File
-  {
-    size_t fileId;
-    size_t fileUniqueId;
-  };
-
-  struct PhotoSize: public File
-  {
-    size_t width;
-    size_t height;
-  };
-  void from_json(const json& j, PhotoSize& photo);
-
-  struct Document: public File
-  {};
-  void from_json(const json& j, Document& document);
-
-  struct Audio: public File
-  {
-    size_t duration;
-  };
-  void from_json(const json& j, Audio& audio);
-
-  struct Video: public File
-  {
-    size_t width;
-    size_t height;
-    size_t duration;
-  };
-  void from_json(const json& j, Video& video);
 }
 
 #endif
