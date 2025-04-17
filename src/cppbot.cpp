@@ -46,7 +46,7 @@ cppbot::Bot::Bot(const std::string& token, std::shared_ptr< handlers::MessageHan
   sslContext_.set_default_verify_paths();
 }
 
-void cppbot::Bot::start()
+void cppbot::Bot::startPolling()
 {
   isRunning_ = true;
   ioThread_ = std::thread(&cppbot::Bot::runIoContext, this);
@@ -68,61 +68,6 @@ types::Message cppbot::Bot::sendMessage(size_t chatId, const std::string& text,
     body["reply_markup"] = replyMarkup.toJson();
   }
   http::response< http::string_body > response = sendRequest(body.dump(), "/sendMessage");
-  return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
-}
-
-types::Message cppbot::Bot::editMessageText(size_t chatId, size_t messageId, const std::string& text)
-{
-  nlohmann::json body = {
-    {"chat_id", chatId},
-    {"message_id", messageId},
-    {"text", text}
-  };
-  http::response< http::string_body > response = sendRequest(body.dump(), "/editMessageText");
-  return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
-}
-
-types::Message cppbot::Bot::editMessageCaption(size_t chatId, size_t messageId, const std::string& caption,
-  const types::InlineKeyboardMarkup& replyMarkup)
-{
-  nlohmann::json body = {
-    {"chat_id", chatId},
-    {"message_id", messageId},
-    {"caption", caption}
-  };
-  if (!replyMarkup.keyboard.empty())
-  {
-    body["reply_markup"] = replyMarkup;
-  }
-
-  http::response< http::string_body > response = sendRequest(body.dump(), "/editMessageCaption");
-  return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
-}
-
-types::Message cppbot::Bot::editMessageMedia(size_t chatId, size_t messageId, const types::InputMedia& media,
-  const types::InlineKeyboardMarkup& replyMarkup)
-{
-  std::string boundary = generateBoundary();
-  nlohmann::json fields;
-  fields["chat_id"] = chatId;
-  fields["message_id"] = messageId;
-  fields["media"] = media;
-  if (!replyMarkup.keyboard.empty())
-  {
-    fields["reply_markup"] = replyMarkup;
-  }
-  return updateFile(media, fields);
-}
-
-types::Message cppbot::Bot::editMessageReplyMarkup(size_t chatId, size_t messageId,
-  const types::InlineKeyboardMarkup& replyMarkup)
-{
-  nlohmann::json body = {
-    {"chat_id", chatId},
-    {"message_id", messageId},
-    {"reply_markup", replyMarkup}
-  };
-  http::response< http::string_body > response = sendRequest(body.dump(), "/editMessageReplyMarkup");
   return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
 }
 
@@ -230,6 +175,61 @@ types::Message cppbot::Bot::sendVideo(size_t chatId, const types::InputFile& vid
     fields["has_spoiler"] = hasSpoiler;
   }
   return sendFile(video, "/sendVideo", fields);
+}
+
+types::Message cppbot::Bot::editMessageText(size_t chatId, size_t messageId, const std::string& text)
+{
+  nlohmann::json body = {
+    {"chat_id", chatId},
+    {"message_id", messageId},
+    {"text", text}
+  };
+  http::response< http::string_body > response = sendRequest(body.dump(), "/editMessageText");
+  return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
+}
+
+types::Message cppbot::Bot::editMessageCaption(size_t chatId, size_t messageId, const std::string& caption,
+  const types::InlineKeyboardMarkup& replyMarkup)
+{
+  nlohmann::json body = {
+    {"chat_id", chatId},
+    {"message_id", messageId},
+    {"caption", caption}
+  };
+  if (!replyMarkup.keyboard.empty())
+  {
+    body["reply_markup"] = replyMarkup;
+  }
+
+  http::response< http::string_body > response = sendRequest(body.dump(), "/editMessageCaption");
+  return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
+}
+
+types::Message cppbot::Bot::editMessageMedia(size_t chatId, size_t messageId, const types::InputMedia& media,
+  const types::InlineKeyboardMarkup& replyMarkup)
+{
+  std::string boundary = generateBoundary();
+  nlohmann::json fields;
+  fields["chat_id"] = chatId;
+  fields["message_id"] = messageId;
+  fields["media"] = media;
+  if (!replyMarkup.keyboard.empty())
+  {
+    fields["reply_markup"] = replyMarkup;
+  }
+  return updateFile(media, fields);
+}
+
+types::Message cppbot::Bot::editMessageReplyMarkup(size_t chatId, size_t messageId,
+  const types::InlineKeyboardMarkup& replyMarkup)
+{
+  nlohmann::json body = {
+    {"chat_id", chatId},
+    {"message_id", messageId},
+    {"reply_markup", replyMarkup}
+  };
+  http::response< http::string_body > response = sendRequest(body.dump(), "/editMessageReplyMarkup");
+  return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
 }
 
 types::File cppbot::Bot::getFile(const std::string& fileId)

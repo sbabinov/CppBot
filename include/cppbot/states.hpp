@@ -1,5 +1,6 @@
 #ifndef STATE_HPP
 #define STATE_HPP
+
 #include <string>
 #include <memory>
 #include <unordered_map>
