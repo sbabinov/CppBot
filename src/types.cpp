@@ -1,4 +1,4 @@
-#include "types.hpp"
+#include "cppbot/types.hpp"
 #include <fstream>
 #include <exception>
 
@@ -239,7 +239,7 @@ void types::to_json(json& j, const types::CallbackQuery& query)
   to_json(from, query.from);
   to_json(message, query.message);
   j = json{
-    {"id", std::to_string(query.id)},
+    {"id", query.id},
     {"from", from},
     {"message", message},
     {"data", query.data}
@@ -248,9 +248,7 @@ void types::to_json(json& j, const types::CallbackQuery& query)
 
 void types::from_json(const json& j, types::CallbackQuery& query)
 {
-  std::string stringId;
-  j.at("id").get_to(stringId);
-  query.id = std::stoull(stringId);
+  j.at("id").get_to(query.id);
   if (j.contains("from"))
   {
     from_json(j.at("from"), query.from);

@@ -1,9 +1,9 @@
-#include "bot.hpp"
+#include "cppbot/cppbot.hpp"
 #include <iostream>
 #include <functional>
 #include <future>
 #include <utility>
-#include "types.hpp"
+#include "cppbot/types.hpp"
 
 namespace asio = boost::asio;
 namespace beast = boost::beast;
@@ -136,11 +136,11 @@ bool cppbot::Bot::deleteMessage(size_t chatId, size_t messageId)
   return nlohmann::json::parse(response.body())["result"].template get< bool >();
 }
 
-bool cppbot::Bot::answerCallbackQuery(size_t queryId, const std::string& text, bool showAlert,
+bool cppbot::Bot::answerCallbackQuery(const std::string& queryId, const std::string& text, bool showAlert,
   const std::string& url, size_t cacheTime)
 {
   nlohmann::json body = {
-    {"callback_query_id", std::to_string(queryId)},
+    {"callback_query_id", queryId},
     {"show_alert", showAlert},
     {"cache_time", cacheTime}
   };

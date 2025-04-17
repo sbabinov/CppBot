@@ -36,8 +36,8 @@ namespace cppbot
 
     bool           deleteMessage         (size_t chatId, size_t messageId);
 
-    bool           answerCallbackQuery   (size_t queryId, const std::string& text = "", bool showAlert = false,
-      const std::string& url = "", size_t cacheTime = 0);
+    bool           answerCallbackQuery   (const std::string& queryId, const std::string& text = "",
+      bool showAlert = false, const std::string& url = "", size_t cacheTime = 0);
 
     types::Message sendPhoto             (size_t chatId, const types::InputFile& photo, const std::string& caption = "",
       const types::InlineKeyboardMarkup& replyMarkup = {}, bool hasSpoiler = false);

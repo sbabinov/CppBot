@@ -141,7 +141,7 @@ namespace types
 
   struct CallbackQuery
   {
-    size_t id;
+    std::string id;
     User from;
     Message message;
     std::string data;
