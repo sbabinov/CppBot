@@ -41,7 +41,8 @@ cppbot::Bot::Bot(const std::string& token, std::shared_ptr< handlers::MessageHan
   mh_(mh),
   qh_(qh),
   sslContext_(asio::ssl::context::tlsv12_client),
-  stateMachine_(storage)
+  stateMachine_(storage),
+  isRunning_(false)
 {
   sslContext_.set_default_verify_paths();
 }
@@ -51,8 +52,17 @@ void cppbot::Bot::startPolling()
   isRunning_ = true;
   ioThread_ = std::thread(&cppbot::Bot::runIoContext, this);
   std::thread(std::bind(&cppbot::Bot::fetchUpdates, this)).detach();
-  std::thread(std::bind(&cppbot::Bot::processCallbackQueries, this)).detach();
-  processMessages();
+  processUpdates();
+}
+
+void cppbot::Bot::stop()
+{
+  isRunning_ = false;
+  ioContext_.stop();
+  if (ioThread_.joinable())
+  {
+    ioThread_.join();
+  }
 }
 
 types::Message cppbot::Bot::sendMessage(size_t chatId, const std::string& text,
@@ -241,16 +251,6 @@ types::File cppbot::Bot::getFile(const std::string& fileId)
   return nlohmann::json::parse(response.body())["result"].template get< types::File >();
 }
 
-void cppbot::Bot::stop()
-{
-    isRunning_ = false;
-    ioContext_.stop();
-    if (ioThread_.joinable())
-    {
-        ioThread_.join();
-    }
-}
-
 void cppbot::Bot::runIoContext()
 {
   asio::executor_work_guard< asio::io_context::executor_type > work = asio::make_work_guard(ioContext_);
@@ -263,7 +263,7 @@ void cppbot::Bot::fetchUpdates()
   while (isRunning_)
   {
     std::string host = "api.telegram.org";
-    std::string path = "/bot" + token_ + "/getUpdates?offset=" + std::to_string(lastUpdateId + 1);
+    std::string path = "/bot" + token_ + "/getUpdates?timeout=30&offset=" + std::to_string(lastUpdateId + 1);
 
     asio::ip::tcp::resolver resolver(ioContext_);
     asio::ssl::stream< asio::ip::tcp::socket > socket(ioContext_, sslContext_);
@@ -282,12 +282,8 @@ void cppbot::Bot::fetchUpdates()
 
       http::request< http::string_body > req{http::verb::get, path, 11};
       req.set(http::field::host, host);
-      req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
-      nlohmann::json body = {
-        {"timeout", 30}
-      };
-      req.body() = body.dump();
-      req.prepare_payload();
+      req.set(http::field::user_agent, "CppBot/1.0");
+
       http::write(socket, req);
 
       beast::flat_buffer buffer;
@@ -299,15 +295,15 @@ void cppbot::Bot::fetchUpdates()
         lastUpdateId = update["update_id"];
         if (update.contains("message"))
         {
-          std::lock_guard< std::mutex > lock(messageQueueMutex_);
+          std::lock_guard< std::mutex > lock(updateMutex_);
           messageQueue_.push(update["message"].template get< types::Message >());
-          messageQueueCondition_.notify_one();
+          updateCondition_.notify_one();
         }
         if (update.contains("callback_query"))
         {
-          std::lock_guard< std::mutex > lock(queryQueueMutex_);
+          std::lock_guard< std::mutex > lock(updateMutex_);
           queryQueue_.push(update["callback_query"].template get< types::CallbackQuery >());
-          queryQueueCondition_.notify_one();
+          updateCondition_.notify_one();
         }
       }
     }
@@ -317,7 +313,7 @@ void cppbot::Bot::fetchUpdates()
       std::this_thread::sleep_for(std::chrono::seconds(10));
     }
 
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 }
 
@@ -418,48 +414,32 @@ types::Message cppbot::Bot::updateFile(const types::InputMedia& media, const nlo
   return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
 }
 
-void cppbot::Bot::processMessages()
+void cppbot::Bot::processUpdates()
 {
   while (isRunning_)
   {
-    std::unique_lock< std::mutex > lock(messageQueueMutex_);
-    messageQueueCondition_.wait(lock, [this]
+    std::unique_lock< std::mutex > lock(updateMutex_);
+    updateCondition_.wait(lock, [this]
     {
-      return !messageQueue_.empty();
+      return !messageQueue_.empty() || !queryQueue_.empty();
     });
-    types::Message msg = messageQueue_.front();
-    messageQueue_.pop();
-    lock.unlock();
-
-    states::StateContext state(msg.chat.id, &stateMachine_);
-
     try
     {
-      (*mh_).processMessage(msg, state);
-    }
-    catch (const std::exception& e)
-    {
-      std::cerr << e.what() << '\n';
-    }
-  }
-}
-
-void cppbot::Bot::processCallbackQueries()
-{
-  while (isRunning_)
-  {
-    std::unique_lock< std::mutex > lock(queryQueueMutex_);
-    queryQueueCondition_.wait(lock, [this]
-    {
-      return !queryQueue_.empty();
-    });
-    types::CallbackQuery query = queryQueue_.front();
-    queryQueue_.pop();
-    lock.unlock();
-
-    try
-    {
-      (*qh_).processCallbackQuery(query);
+      if (!messageQueue_.empty())
+      {
+        types::Message msg = messageQueue_.front();
+        messageQueue_.pop();
+        lock.unlock();
+        states::StateContext state(msg.chat.id, &stateMachine_);
+        (*mh_).processMessage(msg, state);
+      }
+      else
+      {
+        types::CallbackQuery query = queryQueue_.front();
+        queryQueue_.pop();
+        lock.unlock();
+        (*qh_).processCallbackQuery(query);
+      }
     }
     catch (const std::exception& e)
     {

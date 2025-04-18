@@ -66,14 +66,11 @@ namespace cppbot
     std::thread ioThread_;
 
     std::queue< types::Message > messageQueue_;
-    std::mutex messageQueueMutex_;
-    std::condition_variable messageQueueCondition_;
-
     std::queue< types::CallbackQuery > queryQueue_;
-    std::mutex queryQueueMutex_;
-    std::condition_variable queryQueueCondition_;
+    std::mutex updateMutex_;
+    std::condition_variable updateCondition_;
 
-    bool isRunning_ = false;
+    bool isRunning_;
 
     states::StateMachine stateMachine_;
 
@@ -84,8 +81,7 @@ namespace cppbot
     types::Message sendFile(const types::InputFile& file, const std::string& fileType,
       const nlohmann::json& fields);
     types::Message updateFile(const types::InputMedia& media, const nlohmann::json& fields);
-    void processMessages();
-    void processCallbackQueries();
+    void processUpdates();
   };
 }
 
