@@ -283,6 +283,11 @@ void cppbot::Bot::fetchUpdates()
       http::request< http::string_body > req{http::verb::get, path, 11};
       req.set(http::field::host, host);
       req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+      nlohmann::json body = {
+        {"timeout", 30}
+      };
+      req.body() = body.dump();
+      req.prepare_payload();
       http::write(socket, req);
 
       beast::flat_buffer buffer;
@@ -309,9 +314,10 @@ void cppbot::Bot::fetchUpdates()
     catch (std::exception const& e)
     {
       std::cerr << "Error: " << e.what() << std::endl;
+      std::this_thread::sleep_for(std::chrono::seconds(10));
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
   }
 }
 
