@@ -1,0 +1,58 @@
+# CMake package config file for mylib library.
+#
+# The following target is imported:
+#
+#   cppbot::cppbot
+#
+# Type of target to import (static or shared) is determined by the following algorithm:
+#
+#   1. if CPPBOT_SHARED_LIBS is defined and:
+#     1.1 is true, then import shared library target or issue error
+#     1.2 is false, then import static library target or issue error
+#
+#   2. if BUILD_SHARED_LIBS is true and file containing shared library target definition exists,
+#      then import shared library target
+#
+#   3. if file containing static library target definition exists, then import static library target
+#
+#   4. import shared library target or issue error
+
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+find_dependency(Boost 1.86.0 REQUIRED COMPONENTS system)
+find_dependency(nlohmann_json 3.2.0 REQUIRED)
+find_dependency(OpenSSL REQUIRED)
+
+macro(import_targets type)
+    if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/cppbot-${type}-targets.cmake")
+        set(${CMAKE_FIND_PACKAGE_NAME}_NOT_FOUND_MESSAGE "cppbot ${type} libraries were requested but not found")
+        set(${CMAKE_FIND_PACKAGE_NAME}_FOUND OFF)
+        return()
+    endif()
+
+    include("${CMAKE_CURRENT_LIST_DIR}/cppbot-${type}-targets.cmake")
+endmacro()
+
+if(NOT TARGET cppbot::cppbot)
+    set(type "")
+
+    if(DEFINED CPPBOT_SHARED_LIBS)
+        if(CPPBOT_SHARED_LIBS)
+            set(type "shared")
+        else()
+            set(type "static")
+        endif()
+    elseif(BUILD_SHARED_LIBS AND EXISTS "${CMAKE_CURRENT_LIST_DIR}/cppbot-shared-targets.cmake")
+        set(type "shared")
+    elseif(EXISTS "${CMAKE_CURRENT_LIST_DIR}/cppbot-static-targets.cmake")
+        set(type "static")
+    else()
+        set(type "shared")
+    endif()
+
+    import_targets(${type})
+    check_required_components(cppbot)
+    message("-- Found ${type} cppbot (version ${${CMAKE_FIND_PACKAGE_NAME}_VERSION})")
+endif()

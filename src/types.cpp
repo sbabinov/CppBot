@@ -1,4 +1,4 @@
-#include "types.hpp"
+#include "cppbot/types.hpp"
 #include <fstream>
 #include <exception>
 
@@ -203,6 +203,28 @@ void types::from_json(const json& j, types::Message& msg)
   {
     j.at("text").get_to(msg.text);
   }
+  j.at("date").get_to(msg.date);
+  if (j.contains("photo"))
+  {
+    for (const auto& p : j["photo"])
+    {
+      PhotoSize photo;
+      from_json(p, photo);
+      msg.photo.push_back(photo);
+    }
+  }
+  if (j.contains("document"))
+  {
+    from_json(j, msg.document);
+  }
+  if (j.contains("audio"))
+  {
+    j.at("audio").get_to(msg.audio);
+  }
+  if (j.contains("video"))
+  {
+    j.at("video").get_to(msg.video);
+  }
   if (j.contains("reply_markup"))
   {
     from_json(j.at("reply_markup"), msg.replyMarkup);
@@ -217,7 +239,7 @@ void types::to_json(json& j, const types::CallbackQuery& query)
   to_json(from, query.from);
   to_json(message, query.message);
   j = json{
-    {"id", std::to_string(query.id)},
+    {"id", query.id},
     {"from", from},
     {"message", message},
     {"data", query.data}
@@ -226,9 +248,7 @@ void types::to_json(json& j, const types::CallbackQuery& query)
 
 void types::from_json(const json& j, types::CallbackQuery& query)
 {
-  std::string stringId;
-  j.at("id").get_to(stringId);
-  query.id = std::stoull(stringId);
+  j.at("id").get_to(query.id);
   if (j.contains("from"))
   {
     from_json(j.at("from"), query.from);
@@ -350,4 +370,45 @@ types::InputMediaVideo::InputMediaVideo(const std::string& path, bool hasSpoiler
   types::InputMediaVideo(path)
 {
   hasSpoiler_ = hasSpoiler;
+}
+
+// File types
+void types::from_json(const json& j, types::File& file)
+{
+  j.at("file_id").get_to(file.fileId);
+  j.at("file_unique_id").get_to(file.fileUniqueId);
+  if (j.contains("file_path"))
+  {
+    j.at("file_path").get_to(file.filePath);
+  }
+}
+
+void types::from_json(const json& j, types::PhotoSize& photo)
+{
+  j.at("file_id").get_to(photo.fileId);
+  j.at("file_unique_id").get_to(photo.fileUniqueId);
+  j.at("width").get_to(photo.width);
+  j.at("height").get_to(photo.height);
+}
+
+void types::from_json(const json& j, types::Document& document)
+{
+  j.at("file_id").get_to(document.fileId);
+  j.at("file_unique_id").get_to(document.fileUniqueId);
+}
+
+void types::from_json(const json& j, types::Audio& audio)
+{
+  j.at("file_id").get_to(audio.fileId);
+  j.at("file_unique_id").get_to(audio.fileUniqueId);
+  j.at("duration").get_to(audio.duration);
+}
+
+void types::from_json(const json& j, types::Video& video)
+{
+  j.at("file_id").get_to(video.fileId);
+  j.at("file_unique_id").get_to(video.fileUniqueId);
+  j.at("width").get_to(video.width);
+  j.at("height").get_to(video.height);
+  j.at("duration").get_to(video.duration);
 }

@@ -1,5 +1,6 @@
 #ifndef TYPES_HPP
 #define TYPES_HPP
+
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -9,6 +10,39 @@ using json = nlohmann::json;
 
 namespace types
 {
+  struct File
+  {
+    std::string fileId;
+    std::string fileUniqueId;
+    std::string filePath;
+  };
+  void from_json(const json& j, File& photo);
+
+  struct PhotoSize: public File
+  {
+    size_t width;
+    size_t height;
+  };
+  void from_json(const json& j, PhotoSize& photo);
+
+  struct Document: public File
+  {};
+  void from_json(const json& j, Document& document);
+
+  struct Audio: public File
+  {
+    size_t duration;
+  };
+  void from_json(const json& j, Audio& audio);
+
+  struct Video: public File
+  {
+    size_t width;
+    size_t height;
+    size_t duration;
+  };
+  void from_json(const json& j, Video& video);
+
   struct Keyboard
   {
     Keyboard() = default;
@@ -96,6 +130,11 @@ namespace types
     User from;
     Chat chat;
     std::string text;
+    size_t date;
+    std::vector< PhotoSize > photo;
+    Document document;
+    Audio audio;
+    Video video;
     InlineKeyboardMarkup replyMarkup;
   };
   void to_json(json& j, const Message& msg);
@@ -103,7 +142,7 @@ namespace types
 
   struct CallbackQuery
   {
-    size_t id;
+    std::string id;
     User from;
     Message message;
     std::string data;
