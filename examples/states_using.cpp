@@ -35,7 +35,7 @@ void finishRegistration(const types::Message& msg, states::StateContext& state)
   text += "Age: " + boost::any_cast< std::string >(data[forms::registrationForm.age]) + '\n';
   text += "Country: " + msg.text;
 
-  state.resetState(); // Don't forget to reset state to default
+  state.resetState(); // Don't forget to reset the state to default
   app::bot.sendMessage(msg.chat.id, text);
 }
 
@@ -43,7 +43,7 @@ int main()
 {
   app::messageHandler->addHandler("/start", startRegistration);
 
-  // This handlers will call only in appropriate states
+  // This handlers will be called only in appropriate states
   app::messageHandler->addHandler(forms::registrationForm.username, processUsername);
   app::messageHandler->addHandler(forms::registrationForm.age, processAge);
   app::messageHandler->addHandler(forms::registrationForm.country, finishRegistration);
