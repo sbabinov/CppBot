@@ -276,28 +276,27 @@ types::InputFile::InputFile(const std::string& path)
   {
     throw std::runtime_error("Cannot open file: " + path);
   }
-  name_ = extractFileName(path);
-  strBytes_ = std::string(std::istreambuf_iterator< char >(file), std::istreambuf_iterator< char >());
+  file.close();
+  path_ = path;
 }
 
 std::string types::InputFile::name() const
 {
-  return name_;
+  return extractFileName(path_);
 }
 
-std::string types::InputFile::asStringBytes() const
+std::string types::InputFile::bytes() const
 {
-  return strBytes_;
+  std::ifstream file(path_, std::ios::binary);
+  if (!file)
+  {
+    throw std::runtime_error("Cannot open file: " + path_);
+  }
+  return std::string(std::istreambuf_iterator< char >(file), std::istreambuf_iterator< char >());;
 }
 
 types::InputMedia::InputMedia(types::MediaType mediaType, const std::string& path, const std::string& caption)
 {
-  std::ifstream file(path, std::ios::binary);
-  if (!file)
-  {
-    throw std::runtime_error("Cannot open file: " + path);
-  }
-
   switch (mediaType)
   {
   case PHOTO:

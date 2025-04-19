@@ -29,7 +29,7 @@ std::string createMultipartBody(const std::string& boundary, const nlohmann::jso
   body += "--" + boundary + "\r\n";
   body += "Content-Disposition: form-data; name=\"" + formDataName + "\"; filename=\"" + file.name() + "\"\r\n";
   body += "Content-type: application/octet-stream\r\n\r\n";
-  body += file.asStringBytes() + "\r\n";
+  body += file.bytes() + "\r\n";
 
   body += "--" + boundary + "--\r\n";
   return body;
