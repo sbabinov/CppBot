@@ -1,5 +1,5 @@
-#include "bot.hpp"
 #include "cppbot/types.hpp"
+#include "bot.hpp"
 
 // Sync sending
 void echoSync(const types::Message& msg)
