@@ -15,6 +15,7 @@ namespace states
 
     State();
     bool operator==(const State& other) const;
+    bool operator!=(const State& other) const;
    private:
     size_t id_;
     static size_t lastId_;

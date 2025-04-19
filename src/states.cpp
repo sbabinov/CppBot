@@ -10,6 +10,11 @@ bool states::State::operator==(const states::State& other) const
   return this->id_ == other.id_;
 }
 
+bool states::State::operator!=(const states::State& other) const
+{
+  return !(this->id_ == other.id_);
+}
+
 states::StateMachine::StateMachine(std::shared_ptr< Storage > storage):
   storage_(storage)
 {}
