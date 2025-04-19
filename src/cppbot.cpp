@@ -65,7 +65,7 @@ void cppbot::Bot::stop()
   }
 }
 
-types::Message cppbot::Bot::sendMessage(size_t chatId, const std::string& text,
+cppbot::Bot::futureMessage cppbot::Bot::sendMessage(size_t chatId, const std::string& text,
   const types::Keyboard& replyMarkup)
 {
   nlohmann::json body = {
@@ -77,22 +77,20 @@ types::Message cppbot::Bot::sendMessage(size_t chatId, const std::string& text,
   {
     body["reply_markup"] = replyMarkup.toJson();
   }
-  http::response< http::string_body > response = sendRequest(body.dump(), "/sendMessage");
-  return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
+  return sendRequest< types::Message >(body.dump(), "/sendMessage");
 }
 
-bool cppbot::Bot::deleteMessage(size_t chatId, size_t messageId)
+cppbot::Bot::futureBool cppbot::Bot::deleteMessage(size_t chatId, size_t messageId)
 {
   nlohmann::json body = {
     {"chat_id", chatId},
     {"message_id", messageId}
   };
-  http::response< http::string_body > response = sendRequest(body.dump(), "/deleteMessage");
-  return nlohmann::json::parse(response.body())["result"].template get< bool >();
+  return sendRequest< bool >(body.dump(), "/deleteMessage");
 }
 
-bool cppbot::Bot::answerCallbackQuery(const std::string& queryId, const std::string& text, bool showAlert,
-  const std::string& url, size_t cacheTime)
+cppbot::Bot::futureBool cppbot::Bot::answerCallbackQuery(const std::string& queryId, const std::string& text,
+  bool showAlert, const std::string& url, size_t cacheTime)
 {
   nlohmann::json body = {
     {"callback_query_id", queryId},
@@ -107,12 +105,11 @@ bool cppbot::Bot::answerCallbackQuery(const std::string& queryId, const std::str
   {
     body["url"] = url;
   }
-  http::response< http::string_body > response = sendRequest(body.dump(), "/answerCallbackQuery");
-  return nlohmann::json::parse(response.body())["result"].template get< bool >();
+  return sendRequest< bool >(body.dump(), "/answerCallbackQuery");
 }
 
-types::Message cppbot::Bot::sendPhoto(size_t chatId, const types::InputFile& photo, const std::string& caption,
-  const types::InlineKeyboardMarkup& replyMarkup, bool hasSpoiler)
+cppbot::Bot::futureMessage cppbot::Bot::sendPhoto(size_t chatId, const types::InputFile& photo,
+const std::string& caption, const types::InlineKeyboardMarkup& replyMarkup, bool hasSpoiler)
 {
   std::string boundary = generateBoundary();
   nlohmann::json fields;
@@ -132,7 +129,7 @@ types::Message cppbot::Bot::sendPhoto(size_t chatId, const types::InputFile& pho
   return sendFile(photo, "/sendPhoto", fields);
 }
 
-types::Message cppbot::Bot::sendDocument(size_t chatId, const types::InputFile& document,
+cppbot::Bot::futureMessage cppbot::Bot::sendDocument(size_t chatId, const types::InputFile& document,
   const std::string& caption, const types::InlineKeyboardMarkup& replyMarkup)
 {
   std::string boundary = generateBoundary();
@@ -149,8 +146,8 @@ types::Message cppbot::Bot::sendDocument(size_t chatId, const types::InputFile& 
   return sendFile(document, "/sendDocument", fields);
 }
 
-types::Message cppbot::Bot::sendAudio(size_t chatId, const types::InputFile& audio, const std::string& caption,
-  const types::InlineKeyboardMarkup& replyMarkup)
+cppbot::Bot::futureMessage cppbot::Bot::sendAudio(size_t chatId, const types::InputFile& audio,
+  const std::string& caption, const types::InlineKeyboardMarkup& replyMarkup)
 {
   std::string boundary = generateBoundary();
   nlohmann::json fields;
@@ -166,8 +163,8 @@ types::Message cppbot::Bot::sendAudio(size_t chatId, const types::InputFile& aud
   return sendFile(audio, "/sendAudio", fields);
 }
 
-types::Message cppbot::Bot::sendVideo(size_t chatId, const types::InputFile& video, const std::string& caption,
-  const types::InlineKeyboardMarkup& replyMarkup, bool hasSpoiler)
+cppbot::Bot::futureMessage cppbot::Bot::sendVideo(size_t chatId, const types::InputFile& video,
+  const std::string& caption, const types::InlineKeyboardMarkup& replyMarkup, bool hasSpoiler)
 {
   std::string boundary = generateBoundary();
   nlohmann::json fields;
@@ -187,19 +184,18 @@ types::Message cppbot::Bot::sendVideo(size_t chatId, const types::InputFile& vid
   return sendFile(video, "/sendVideo", fields);
 }
 
-types::Message cppbot::Bot::editMessageText(size_t chatId, size_t messageId, const std::string& text)
+cppbot::Bot::futureMessage cppbot::Bot::editMessageText(size_t chatId, size_t messageId, const std::string& text)
 {
   nlohmann::json body = {
     {"chat_id", chatId},
     {"message_id", messageId},
     {"text", text}
   };
-  http::response< http::string_body > response = sendRequest(body.dump(), "/editMessageText");
-  return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
+  return sendRequest< types::Message >(body.dump(), "/editMessageText");
 }
 
-types::Message cppbot::Bot::editMessageCaption(size_t chatId, size_t messageId, const std::string& caption,
-  const types::InlineKeyboardMarkup& replyMarkup)
+cppbot::Bot::futureMessage cppbot::Bot::editMessageCaption(size_t chatId, size_t messageId,
+  const std::string& caption, const types::InlineKeyboardMarkup& replyMarkup)
 {
   nlohmann::json body = {
     {"chat_id", chatId},
@@ -211,11 +207,10 @@ types::Message cppbot::Bot::editMessageCaption(size_t chatId, size_t messageId, 
     body["reply_markup"] = replyMarkup;
   }
 
-  http::response< http::string_body > response = sendRequest(body.dump(), "/editMessageCaption");
-  return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
+  return sendRequest< types::Message >(body.dump(), "/editMessageCaption");
 }
 
-types::Message cppbot::Bot::editMessageMedia(size_t chatId, size_t messageId, const types::InputMedia& media,
+cppbot::Bot::futureMessage cppbot::Bot::editMessageMedia(size_t chatId, size_t messageId, const types::InputMedia& media,
   const types::InlineKeyboardMarkup& replyMarkup)
 {
   std::string boundary = generateBoundary();
@@ -230,7 +225,7 @@ types::Message cppbot::Bot::editMessageMedia(size_t chatId, size_t messageId, co
   return updateFile(media, fields);
 }
 
-types::Message cppbot::Bot::editMessageReplyMarkup(size_t chatId, size_t messageId,
+cppbot::Bot::futureMessage cppbot::Bot::editMessageReplyMarkup(size_t chatId, size_t messageId,
   const types::InlineKeyboardMarkup& replyMarkup)
 {
   nlohmann::json body = {
@@ -238,17 +233,15 @@ types::Message cppbot::Bot::editMessageReplyMarkup(size_t chatId, size_t message
     {"message_id", messageId},
     {"reply_markup", replyMarkup}
   };
-  http::response< http::string_body > response = sendRequest(body.dump(), "/editMessageReplyMarkup");
-  return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
+  return sendRequest< types::Message >(body.dump(), "/editMessageReplyMarkup");
 }
 
-types::File cppbot::Bot::getFile(const std::string& fileId)
+cppbot::Bot::futureFile cppbot::Bot::getFile(const std::string& fileId)
 {
   nlohmann::json body = {
     {"file_id", fileId}
   };
-  http::response< http::string_body > response = sendRequest(body.dump(), "/getFile");
-  return nlohmann::json::parse(response.body())["result"].template get< types::File >();
+  return sendRequest< types::File >(body.dump(), "/getFile");
 }
 
 void cppbot::Bot::runIoContext()
@@ -317,57 +310,7 @@ void cppbot::Bot::fetchUpdates()
   }
 }
 
-http::response< http::string_body > cppbot::Bot::sendRequest(const std::string& body, const std::string& endpoint,
-  const std::vector< std::pair< http::field, std::string > >& additionalHeaders, const std::string& contentType)
-{
-  std::promise< http::response< http::string_body > > promise;
-  std::future< http::response< http::string_body > > future = promise.get_future();
-  asio::post(ioContext_, [this, &body, &endpoint, &additionalHeaders, &contentType, &promise]
-  {
-    std::string host = "api.telegram.org";
-    std::string path = "/bot" + token_ + endpoint;
-    asio::ip::tcp::resolver resolver(ioContext_);
-    asio::ssl::stream< asio::ip::tcp::socket > socket(ioContext_, sslContext_);
-
-    if (!SSL_set_tlsext_host_name(socket.native_handle(), host.c_str()))
-    {
-      throw boost::system::system_error(::ERR_get_error(), asio::error::get_ssl_category());
-    }
-
-    auto const endpoints = resolver.resolve(host, "443");
-    asio::connect(socket.next_layer(), endpoints.begin(), endpoints.end());
-
-    socket.handshake(asio::ssl::stream_base::client);
-
-    http::request< http::string_body > req{http::verb::post, path, 11};
-    req.set(http::field::host, host);
-    req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
-    req.set(http::field::content_type, contentType);
-    for (const auto& header : additionalHeaders)
-    {
-      req.set(header.first, header.second);
-    }
-    req.body() = body;
-    req.prepare_payload();
-
-    http::write(socket, req);
-
-    beast::flat_buffer buffer;
-    http::response< http::string_body > res;
-    http::read(socket, buffer, res);
-    promise.set_value(res);
-  });
-
-  http::response< http::string_body > result = future.get();
-  nlohmann::json response = nlohmann::json::parse(result.body());
-  if (!response["ok"])
-  {
-    throw std::runtime_error(response["description"]);
-  }
-  return result;
-}
-
-types::Message cppbot::Bot::sendFile(const types::InputFile& file, const std::string& endpoint,
+cppbot::Bot::futureMessage cppbot::Bot::sendFile(const types::InputFile& file, const std::string& endpoint,
   const nlohmann::json& fields)
 {
   std::string fileType = "";
@@ -389,29 +332,31 @@ types::Message cppbot::Bot::sendFile(const types::InputFile& file, const std::st
   }
 
   std::string boundary = generateBoundary();
-
   std::string body = createMultipartBody(boundary, fields, fileType, file);
-  http::response< http::string_body > response = sendRequest(
+  return sendRequest< types::Message >(
     body,
     endpoint,
     {{http::field::content_length, std::to_string(body.size())}, {http::field::connection, "close"}},
     "multipart/form-data; boundary=" + boundary
   );
-  return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
 }
 
-types::Message cppbot::Bot::updateFile(const types::InputMedia& media, const nlohmann::json& fields)
+cppbot::Bot::futureMessage cppbot::Bot::updateFile(const types::InputMedia& media, const nlohmann::json& fields)
 {
   std::string boundary = generateBoundary();
 
   std::string body = createMultipartBody(boundary, fields, media.file().name(), media.file());
-  http::response< http::string_body > response = sendRequest(
+  return sendRequest< types::Message >(
     body,
     "/editMessageMedia",
     {{http::field::content_length, std::to_string(body.size())}, {http::field::connection, "close"}},
     "multipart/form-data; boundary=" + boundary
   );
-  return nlohmann::json::parse(response.body())["result"].template get< types::Message >();
+}
+
+void cppbot::Bot::printError(const std::string& errorMessage) const
+{
+  std::cerr << "Request Error: " << errorMessage << '\n';
 }
 
 void cppbot::Bot::processUpdates()
