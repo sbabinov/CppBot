@@ -162,7 +162,8 @@ namespace types
     std::string strBytes_;
   };
 
-  enum MediaType {
+  enum MediaType
+  {
     PHOTO,
     DOCUMENT,
     AUDIO,

@@ -188,21 +188,3 @@ if(MYLIB_BUILD_DOCS)
     doxygen_add_docs(docs include)
 endif()
 
-#if (OPENSSL_FOUND)
-#    include_directories(${OPENSSL_INCLUDE_DIRS})
-#    message(STATUS "OpenSSL found: ${OPENSSL_VERSION}")
-#else()
-#    message(FATAL_ERROR "OpenSSL not found!")
-#endif()
-
-# file(GLOB_RECURSE SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
-
-#file(GLOB_RECURSE EXAMPLE_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/examples/*.cpp)
-
-# add_library(libcppbot SHARED ${SOURCE_FILES})
-# set_target_properties(libcppbot PROPERTIES OUTPUT_NAME "cppbot")
-
-add_executable(main main.cpp)
-
-target_link_libraries(main PRIVATE cppbot)
-#target_link_libraries(main PRIVATE OpenSSL::SSL OpenSSL::Crypto)
