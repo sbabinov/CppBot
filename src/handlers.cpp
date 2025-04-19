@@ -34,7 +34,12 @@ void handlers::MessageHandler::processMessage(const types::Message& msg, states:
   bool isHandlerExists = false;
   if (currentState == states::StateMachine::DEFAULT_STATE)
   {
-    cmdHandlers_.at(cmd)(msg);
+    try
+    {
+      cmdHandlers_.at(cmd)(msg);
+    }
+    catch (const std::exception&)
+    {}
     return;
   }
   try
@@ -47,7 +52,12 @@ void handlers::MessageHandler::processMessage(const types::Message& msg, states:
   {
     if (!isHandlerExists)
     {
-      stateHandlers_.at(currentState)(msg, state);
+      try
+      {
+        stateHandlers_.at(currentState)(msg, state);
+      }
+      catch(const std::exception&)
+      {}
     }
   }
 }
