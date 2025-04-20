@@ -184,13 +184,18 @@ cppbot::Bot::futureMessage cppbot::Bot::sendVideo(size_t chatId, const types::In
   return sendFile(video, "/sendVideo", fields);
 }
 
-cppbot::Bot::futureMessage cppbot::Bot::editMessageText(size_t chatId, size_t messageId, const std::string& text)
+cppbot::Bot::futureMessage cppbot::Bot::editMessageText(size_t chatId, size_t messageId, const std::string& text,
+  const types::InlineKeyboardMarkup& replyMarkup)
 {
   nlohmann::json body = {
     {"chat_id", chatId},
     {"message_id", messageId},
     {"text", text}
   };
+  if (!replyMarkup.keyboard.empty())
+  {
+    body["reply_markup"] = replyMarkup;
+  }
   return sendRequest< types::Message >(body.dump(), "/editMessageText");
 }
 

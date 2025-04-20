@@ -150,7 +150,8 @@ namespace cppbot
       @param text New text
       @return std::future< types::Message >
     */
-    futureMessage editMessageText       (size_t chatId, size_t messageId, const std::string& text);
+    futureMessage editMessageText       (size_t chatId, size_t messageId, const std::string& text,
+      const types::InlineKeyboardMarkup& replyMarkup = {});
 
     /*!
       @brief Async method for editing message caption.
