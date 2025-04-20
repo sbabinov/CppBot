@@ -1,0 +1,29 @@
+digraph "types::CallbackQuery"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  Node1 [id="Node000001",label="types::CallbackQuery",height=0.2,width=0.4,color="gray40", fillcolor="grey60", style="filled", fontcolor="black",tooltip="Struct represents an incoming callback query from a callback button in an InlineKeyboard."];
+  Node2 -> Node1 [id="edge1_Node000001_Node000002",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" from",fontcolor="grey" ];
+  Node2 [id="Node000002",label="types::User",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$structtypes_1_1User.html",tooltip="Struct represents a Telegram user."];
+  Node3 -> Node1 [id="edge2_Node000001_Node000003",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" message",fontcolor="grey" ];
+  Node3 [id="Node000003",label="types::Message",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$structtypes_1_1Message.html",tooltip="Struct represents a Telegram message."];
+  Node2 -> Node3 [id="edge3_Node000003_Node000002",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" from",fontcolor="grey" ];
+  Node4 -> Node3 [id="edge4_Node000003_Node000004",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" chat",fontcolor="grey" ];
+  Node4 [id="Node000004",label="types::Chat",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$structtypes_1_1Chat.html",tooltip="Struct represents a chat."];
+  Node5 -> Node3 [id="edge5_Node000003_Node000005",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" document",fontcolor="grey" ];
+  Node5 [id="Node000005",label="types::Document",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$structtypes_1_1Document.html",tooltip="Struct represents telegram document object."];
+  Node6 -> Node5 [id="edge6_Node000005_Node000006",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node6 [id="Node000006",label="types::File",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$structtypes_1_1File.html",tooltip="Struct contains telegram file info."];
+  Node7 -> Node3 [id="edge7_Node000003_Node000007",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" audio",fontcolor="grey" ];
+  Node7 [id="Node000007",label="types::Audio",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$structtypes_1_1Audio.html",tooltip="Struct represents telegram audio object."];
+  Node6 -> Node7 [id="edge8_Node000007_Node000006",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node8 -> Node3 [id="edge9_Node000003_Node000008",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" video",fontcolor="grey" ];
+  Node8 [id="Node000008",label="types::Video",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$structtypes_1_1Video.html",tooltip="Struct represents telegram video object."];
+  Node6 -> Node8 [id="edge10_Node000008_Node000006",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node9 -> Node3 [id="edge11_Node000003_Node000009",dir="back",color="darkorchid3",style="dashed",tooltip=" ",label=" replyMarkup",fontcolor="grey" ];
+  Node9 [id="Node000009",label="types::InlineKeyboardMarkup",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$structtypes_1_1InlineKeyboardMarkup.html",tooltip="Struct represents telegram inline keyboard."];
+  Node10 -> Node9 [id="edge12_Node000009_Node000010",dir="back",color="steelblue1",style="solid",tooltip=" "];
+  Node10 [id="Node000010",label="types::Keyboard",height=0.2,width=0.4,color="gray40", fillcolor="white", style="filled",URL="$structtypes_1_1Keyboard.html",tooltip="Base struct for telegram keyboards."];
+}

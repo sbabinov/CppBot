@@ -1,0 +1,393 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!-- BEGIN opengraph metadata -->
+<meta property="og:title" content="Doxygen Awesome" />
+<meta property="og:image" content="https://repository-images.githubusercontent.com/348492097/4f16df80-88fb-11eb-9d31-4015ff22c452" />
+<meta property="og:description" content="Custom CSS theme for doxygen html-documentation with lots of customization parameters." />
+<meta property="og:url" content="https://jothepro.github.io/doxygen-awesome-css/" />
+<!-- END opengraph metadata -->
+<!-- BEGIN twitter metadata -->
+<meta name="twitter:image:src" content="https://repository-images.githubusercontent.com/348492097/4f16df80-88fb-11eb-9d31-4015ff22c452" />
+<meta name="twitter:title" content="Doxygen Awesome" />
+<meta name="twitter:description" content="Custom CSS theme for doxygen html-documentation with lots of customization parameters." />
+<!-- END twitter metadata -->
+<title>CppBot: include/cppbot/cppbot.hpp Source File</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link rel="icon" type="image/svg+xml" href="logo.drawio.svg"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="doxygen-awesome-darkmode-toggle.js"></script>
+<script type="text/javascript" src="doxygen-awesome-fragment-copy-button.js"></script>
+<script type="text/javascript" src="doxygen-awesome-paragraph-link.js"></script>
+<script type="text/javascript" src="doxygen-awesome-interactive-toc.js"></script>
+<script type="text/javascript" src="doxygen-awesome-tabs.js"></script>
+<script type="text/javascript" src="toggle-alternative-theme.js"></script>
+<script type="text/javascript">
+    DoxygenAwesomeFragmentCopyButton.init()
+    DoxygenAwesomeDarkModeToggle.init()
+    DoxygenAwesomeParagraphLink.init()
+    DoxygenAwesomeInteractiveToc.init()
+    DoxygenAwesomeTabs.init()
+</script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="doxygen-awesome.css" rel="stylesheet" type="text/css"/>
+<link href="custom.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen-awesome-sidebar-only-darkmode-toggle.css" rel="stylesheet" type="text/css"/>
+<link href="custom-alternative.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<!-- https://tholman.com/github-corners/ -->
+<a href="https://github.com/sbabinov/CppBot" class="github-corner" title="View source on GitHub" target="_blank" rel="noopener noreferrer">
+    <svg viewBox="0 0 250 250" width="40" height="40" style="position: absolute; top: 0; border: 0; right: 0; z-index: 99;" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">CppBot
+   </div>
+   <div id="projectbrief">Simple library for creating Telegram bots.</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generated by Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Search');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function(){initNavTree('cppbot_8hpp_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Loading...</div>
+<div class="SRStatus" id="Searching">Searching...</div>
+<div class="SRStatus" id="NoMatches">No Matches</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">cppbot.hpp</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="cppbot_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#ifndef BOT_HPP</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#define BOT_HPP</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;iostream&gt;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &lt;future&gt;</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#include &lt;thread&gt;</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#include &lt;queue&gt;</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#include &lt;mutex&gt;</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#include &lt;condition_variable&gt;</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &lt;utility&gt;</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &lt;nlohmann/json.hpp&gt;</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &lt;boost/asio/ssl.hpp&gt;</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include &lt;boost/beast.hpp&gt;</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &lt;boost/beast/http.hpp&gt;</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">#include &quot;<a class="code" href="types_8hpp.html">types.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">#include &quot;<a class="code" href="handlers_8hpp.html">handlers.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">#include &quot;<a class="code" href="states_8hpp.html">states.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keyword">namespace </span>asio = boost::asio;</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="keyword">namespace </span>http = boost::beast::http;</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
+<div class="foldopen" id="foldopen00037" data-start="{" data-end="}">
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="namespacecppbot.html">   37</a></span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacecppbot.html">cppbot</a></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>{</div>
+<div class="foldopen" id="foldopen00042" data-start="{" data-end="};">
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html">   42</a></span>  <span class="keyword">class </span><a class="code hl_class" href="classcppbot_1_1_bot.html">Bot</a></div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>  {</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>   <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#ae59a9d05da1095bf595fbee02cf8cd2a">   45</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classcppbot_1_1_bot.html#ae59a9d05da1095bf595fbee02cf8cd2a">futureMessage</a> = std::future&lt; types::Message &gt;;</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#af0b5b4c4f4f8e49eef62f3d3ec3c66ab">   46</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classcppbot_1_1_bot.html#af0b5b4c4f4f8e49eef62f3d3ec3c66ab">futureFile</a> = std::future&lt; types::File &gt;;</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#a32cb78a97aa67c1bcd9f7a920488b3ba">   47</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="classcppbot_1_1_bot.html#a32cb78a97aa67c1bcd9f7a920488b3ba">futureBool</a> = std::future&lt; bool &gt;;</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#a56f8ed3e29bcfc2c0a887c9d113f176b">   55</a></span>    <a class="code hl_function" href="classcppbot_1_1_bot.html#a56f8ed3e29bcfc2c0a887c9d113f176b">Bot</a>(<span class="keyword">const</span> std::string&amp; token, std::shared_ptr&lt; handlers::MessageHandler &gt; mh,</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>      std::shared_ptr&lt; handlers::CallbackQueryHandler &gt; qh, std::shared_ptr&lt; states::Storage &gt; storage);</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#ad9598c0c8faa7b293d9222fb8adae750">   61</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classcppbot_1_1_bot.html#ad9598c0c8faa7b293d9222fb8adae750">startPolling</a>();</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#aeb162934ee2620aa7bb06ed45e27c430">   66</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classcppbot_1_1_bot.html#aeb162934ee2620aa7bb06ed45e27c430">stop</a>();</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#a05e9dbd2559b0b35e61b3dc13947c9a3">   75</a></span>    <a class="code hl_typedef" href="classcppbot_1_1_bot.html#ae59a9d05da1095bf595fbee02cf8cd2a">futureMessage</a> <a class="code hl_function" href="classcppbot_1_1_bot.html#a05e9dbd2559b0b35e61b3dc13947c9a3">sendMessage</a>           (<span class="keywordtype">size_t</span> chatId, <span class="keyword">const</span> std::string&amp; text,</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>      <span class="keyword">const</span> <a class="code hl_struct" href="structtypes_1_1_keyboard.html">types::Keyboard</a>&amp; replyMarkup = {});</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#a9839a2d37d5a0ad3767294a6d2613ed6">   86</a></span>    <a class="code hl_typedef" href="classcppbot_1_1_bot.html#a32cb78a97aa67c1bcd9f7a920488b3ba">futureBool</a>    <a class="code hl_function" href="classcppbot_1_1_bot.html#a9839a2d37d5a0ad3767294a6d2613ed6">deleteMessage</a>        (<span class="keywordtype">size_t</span> chatId, <span class="keywordtype">size_t</span> messageId);</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#a57c858453c306757ff5bf905ed079a80">   95</a></span>    <a class="code hl_typedef" href="classcppbot_1_1_bot.html#a32cb78a97aa67c1bcd9f7a920488b3ba">futureBool</a>    <a class="code hl_function" href="classcppbot_1_1_bot.html#a57c858453c306757ff5bf905ed079a80">answerCallbackQuery</a>  (<span class="keyword">const</span> std::string&amp; queryId, <span class="keyword">const</span> std::string&amp; text = <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>      <span class="keywordtype">bool</span> showAlert = <span class="keyword">false</span>, <span class="keyword">const</span> std::string&amp; url = <span class="stringliteral">&quot;&quot;</span>, <span class="keywordtype">size_t</span> cacheTime = 0);</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#a4d3d9cfe7a44c3891e6fccb40215b3e8">  109</a></span>    <a class="code hl_typedef" href="classcppbot_1_1_bot.html#ae59a9d05da1095bf595fbee02cf8cd2a">futureMessage</a> <a class="code hl_function" href="classcppbot_1_1_bot.html#a4d3d9cfe7a44c3891e6fccb40215b3e8">sendPhoto</a>             (<span class="keywordtype">size_t</span> chatId, <span class="keyword">const</span> <a class="code hl_class" href="classtypes_1_1_input_file.html">types::InputFile</a>&amp; photo, <span class="keyword">const</span> std::string&amp; caption = <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>      <span class="keyword">const</span> <a class="code hl_struct" href="structtypes_1_1_inline_keyboard_markup.html">types::InlineKeyboardMarkup</a>&amp; replyMarkup = {}, <span class="keywordtype">bool</span> hasSpoiler = <span class="keyword">false</span>);</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span> </div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#ad20eb8c64108bbfbe6d40b8a3244893c">  120</a></span>    <a class="code hl_typedef" href="classcppbot_1_1_bot.html#ae59a9d05da1095bf595fbee02cf8cd2a">futureMessage</a> <a class="code hl_function" href="classcppbot_1_1_bot.html#ad20eb8c64108bbfbe6d40b8a3244893c">sendDocument</a>          (<span class="keywordtype">size_t</span> chatId, <span class="keyword">const</span> <a class="code hl_class" href="classtypes_1_1_input_file.html">types::InputFile</a>&amp; document, <span class="keyword">const</span> std::string&amp; caption = <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>      <span class="keyword">const</span> <a class="code hl_struct" href="structtypes_1_1_inline_keyboard_markup.html">types::InlineKeyboardMarkup</a>&amp; replyMarkup = {});</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span> </div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#a634b54b353f95cbd450afa9ef60560c9">  131</a></span>    <a class="code hl_typedef" href="classcppbot_1_1_bot.html#ae59a9d05da1095bf595fbee02cf8cd2a">futureMessage</a> <a class="code hl_function" href="classcppbot_1_1_bot.html#a634b54b353f95cbd450afa9ef60560c9">sendAudio</a>             (<span class="keywordtype">size_t</span> chatId, <span class="keyword">const</span> <a class="code hl_class" href="classtypes_1_1_input_file.html">types::InputFile</a>&amp; audio, <span class="keyword">const</span> std::string&amp; caption = <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>      <span class="keyword">const</span> <a class="code hl_struct" href="structtypes_1_1_inline_keyboard_markup.html">types::InlineKeyboardMarkup</a>&amp; replyMarkup = {});</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span> </div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#a80f8fa7160c0ab83b53f5d28f17dc96e">  143</a></span>    <a class="code hl_typedef" href="classcppbot_1_1_bot.html#ae59a9d05da1095bf595fbee02cf8cd2a">futureMessage</a> <a class="code hl_function" href="classcppbot_1_1_bot.html#a80f8fa7160c0ab83b53f5d28f17dc96e">sendVideo</a>             (<span class="keywordtype">size_t</span> chatId, <span class="keyword">const</span> <a class="code hl_class" href="classtypes_1_1_input_file.html">types::InputFile</a>&amp; video, <span class="keyword">const</span> std::string&amp; caption = <span class="stringliteral">&quot;&quot;</span>,</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>      <span class="keyword">const</span> <a class="code hl_struct" href="structtypes_1_1_inline_keyboard_markup.html">types::InlineKeyboardMarkup</a>&amp; replyMarkup = {}, <span class="keywordtype">bool</span> hasSpoiler = <span class="keyword">false</span>);</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span> </div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#a5c65b46a4e49b5f9b6ccde9e3995fa4e">  153</a></span>    <a class="code hl_typedef" href="classcppbot_1_1_bot.html#ae59a9d05da1095bf595fbee02cf8cd2a">futureMessage</a> <a class="code hl_function" href="classcppbot_1_1_bot.html#a5c65b46a4e49b5f9b6ccde9e3995fa4e">editMessageText</a>       (<span class="keywordtype">size_t</span> chatId, <span class="keywordtype">size_t</span> messageId, <span class="keyword">const</span> std::string&amp; text);</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span> </div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#ad1366770a332bcb26fbac08d645047c0">  163</a></span>    <a class="code hl_typedef" href="classcppbot_1_1_bot.html#ae59a9d05da1095bf595fbee02cf8cd2a">futureMessage</a> <a class="code hl_function" href="classcppbot_1_1_bot.html#ad1366770a332bcb26fbac08d645047c0">editMessageCaption</a>    (<span class="keywordtype">size_t</span> chatId, <span class="keywordtype">size_t</span> messageId, <span class="keyword">const</span> std::string&amp; caption,</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>      <span class="keyword">const</span> <a class="code hl_struct" href="structtypes_1_1_inline_keyboard_markup.html">types::InlineKeyboardMarkup</a>&amp; replyMarkup = {});</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span> </div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#a406ae74c01296725c0b880253072e209">  174</a></span>    <a class="code hl_typedef" href="classcppbot_1_1_bot.html#ae59a9d05da1095bf595fbee02cf8cd2a">futureMessage</a> <a class="code hl_function" href="classcppbot_1_1_bot.html#a406ae74c01296725c0b880253072e209">editMessageMedia</a>      (<span class="keywordtype">size_t</span> chatId, <span class="keywordtype">size_t</span> messageId, <span class="keyword">const</span> <a class="code hl_class" href="classtypes_1_1_input_media.html">types::InputMedia</a>&amp; media,</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>      <span class="keyword">const</span> <a class="code hl_struct" href="structtypes_1_1_inline_keyboard_markup.html">types::InlineKeyboardMarkup</a>&amp; replyMarkup = {});</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span> </div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#a685e94f1fee9d7338debc3c8691b5884">  184</a></span>    <a class="code hl_typedef" href="classcppbot_1_1_bot.html#ae59a9d05da1095bf595fbee02cf8cd2a">futureMessage</a> <a class="code hl_function" href="classcppbot_1_1_bot.html#a685e94f1fee9d7338debc3c8691b5884">editMessageReplyMarkup</a>(<span class="keywordtype">size_t</span> chatId, <span class="keywordtype">size_t</span> messageId,</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>      <span class="keyword">const</span> <a class="code hl_struct" href="structtypes_1_1_inline_keyboard_markup.html">types::InlineKeyboardMarkup</a>&amp; replyMarkup);</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span> </div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#a658b009989cfc115fe3e650c395bfbb5">  192</a></span>    <a class="code hl_typedef" href="classcppbot_1_1_bot.html#af0b5b4c4f4f8e49eef62f3d3ec3c66ab">futureFile</a>    <a class="code hl_function" href="classcppbot_1_1_bot.html#a658b009989cfc115fe3e650c395bfbb5">getFile</a>               (<span class="keyword">const</span> std::string&amp; fileId);</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span> </div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno"><a class="line" href="classcppbot_1_1_bot.html#a2951b2f0fdbd9abe84eddb87181eff30">  199</a></span>    <a class="code hl_class" href="classstates_1_1_state_context.html">states::StateContext</a> <a class="code hl_function" href="classcppbot_1_1_bot.html#a2951b2f0fdbd9abe84eddb87181eff30">getStateContext</a>(<span class="keywordtype">size_t</span> chatId);</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>   <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>    std::string token_;</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>    std::shared_ptr&lt; handlers::MessageHandler &gt; mh_;</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>    std::shared_ptr&lt; handlers::CallbackQueryHandler &gt; qh_;</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>    asio::io_context ioContext_;</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>    asio::ssl::context sslContext_;</div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>    std::thread ioThread_;</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>    std::queue&lt; types::Message &gt; messageQueue_;</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>    std::queue&lt; types::CallbackQuery &gt; queryQueue_;</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>    std::mutex updateMutex_;</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>    std::condition_variable updateCondition_;</div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>    <a class="code hl_class" href="classstates_1_1_state_machine.html">states::StateMachine</a> stateMachine_;</div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>    <span class="keywordtype">bool</span> isRunning_;</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span> </div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>    <span class="keywordtype">void</span> runIoContext();</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>    <span class="keywordtype">void</span> fetchUpdates();</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>    <span class="keywordtype">void</span> processUpdates();</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span> </div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>    <a class="code hl_typedef" href="classcppbot_1_1_bot.html#ae59a9d05da1095bf595fbee02cf8cd2a">futureMessage</a> sendFile(<span class="keyword">const</span> <a class="code hl_class" href="classtypes_1_1_input_file.html">types::InputFile</a>&amp; file, <span class="keyword">const</span> std::string&amp; fileType,</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>      <span class="keyword">const</span> nlohmann::json&amp; fields);</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>    <a class="code hl_typedef" href="classcppbot_1_1_bot.html#ae59a9d05da1095bf595fbee02cf8cd2a">futureMessage</a> updateFile(<span class="keyword">const</span> <a class="code hl_class" href="classtypes_1_1_input_media.html">types::InputMedia</a>&amp; media, <span class="keyword">const</span> nlohmann::json&amp; fields);</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span> </div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>    <span class="keywordtype">void</span> printError(<span class="keyword">const</span> std::string&amp; errorMessage) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span> </div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>    <span class="keyword">struct </span>RequestData</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>    {</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>      std::string body;</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>      std::string endpoint;</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>      std::vector&lt; std::pair&lt; http::field, std::string &gt; &gt; additionalHeaders;</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>      std::string contentType;</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>      std::shared_ptr&lt; asio::ip::tcp::resolver &gt; resolver;</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>      std::shared_ptr &lt; asio::ssl::stream&lt;asio::ip::tcp::socket&gt; &gt; socket;</div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>      std::shared_ptr&lt; http::request&lt; http::string_body &gt; &gt; req;</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>      std::shared_ptr&lt; http::response&lt;http::string_body&gt; &gt; res;</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>      std::shared_ptr&lt; boost::beast::flat_buffer &gt; buffer;</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>    };</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span> </div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>    <span class="keyword">template</span>&lt; <span class="keyword">typename</span> T &gt;</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>    std::future&lt; T &gt; sendRequest(<span class="keyword">const</span> std::string&amp; body, <span class="keyword">const</span> std::string&amp; endpoint,</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>      <span class="keyword">const</span> std::vector&lt; std::pair&lt; http::field, std::string &gt; &gt;&amp; additionalHeaders = {},</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>      <span class="keyword">const</span> std::string&amp; contentType = <span class="stringliteral">&quot;application/json&quot;</span>)</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>    {</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>      <span class="keyword">auto</span> data = std::make_shared&lt; RequestData &gt;();</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span> </div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>      data-&gt;body = body;</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>      data-&gt;endpoint = endpoint;</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>      data-&gt;additionalHeaders = additionalHeaders;</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>      data-&gt;contentType = contentType;</div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>      data-&gt;resolver = std::make_shared&lt;  asio::ip::tcp::resolver &gt;(ioContext_);</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>      data-&gt;socket = std::make_shared&lt; asio::ssl::stream&lt;asio::ip::tcp::socket&gt; &gt;(ioContext_, sslContext_);</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span> </div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>      <span class="keyword">auto</span> promise = std::make_shared&lt; std::promise&lt; T &gt; &gt;();</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>      std::future&lt; T &gt; future = promise-&gt;get_future();</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span> </div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>      <span class="keywordflow">if</span> (!SSL_set_tlsext_host_name(data-&gt;socket-&gt;native_handle(), <span class="stringliteral">&quot;api.telegram.org&quot;</span>))</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>      {</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>        printError(<span class="stringliteral">&quot;Problems with SSL&quot;</span>);</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>        promise-&gt;set_exception(std::make_exception_ptr(std::runtime_error(<span class="stringliteral">&quot;Correct message wasn&#39;t received&quot;</span>)));</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>      }</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>      data-&gt;resolver-&gt;async_resolve(<span class="stringliteral">&quot;api.telegram.org&quot;</span>, <span class="stringliteral">&quot;443&quot;</span>,</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>        [<span class="keyword">this</span>, data, promise](<span class="keyword">auto</span> ec, <span class="keyword">auto</span> endpoints)</div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>        {</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>          <span class="keywordflow">if</span> (ec)</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>          {</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>            printError(ec.message());</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>            promise-&gt;set_exception(std::make_exception_ptr(std::runtime_error(<span class="stringliteral">&quot;Correct message wasn&#39;t received&quot;</span>)));</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>            <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>          }</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>          async_connect(data-&gt;socket-&gt;next_layer(), endpoints, [<span class="keyword">this</span>, data, promise](<span class="keyword">auto</span> ec, <span class="keyword">auto</span>)</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>          {</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>            if (ec)</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>            {</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>              printError(ec.message());</div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>              promise-&gt;set_exception(std::make_exception_ptr(std::runtime_error(<span class="stringliteral">&quot;Correct message wasn&#39;t received&quot;</span>)));</div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>              return;</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>            }</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>            data-&gt;socket-&gt;async_handshake(asio::ssl::stream_base::client, [<span class="keyword">this</span>, data, promise](<span class="keyword">auto</span> ec)</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>            {</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>              if (ec)</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>              {</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>                printError(ec.message());</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>                promise-&gt;set_exception(std::make_exception_ptr(std::runtime_error(<span class="stringliteral">&quot;Correct message wasn&#39;t received&quot;</span>)));</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>                return;</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>              }</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>              std::string host = <span class="stringliteral">&quot;api.telegram.org&quot;</span>;</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>              std::string path = <span class="stringliteral">&quot;/bot&quot;</span> + token_ + data-&gt;endpoint;</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>              <span class="keyword">auto</span> req = std::make_shared&lt; http::request&lt; http::string_body &gt; &gt;(http::verb::post, path, 11);</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>              req-&gt;set(http::field::host, host);</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>              req-&gt;set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);</div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>              req-&gt;set(http::field::content_type, data-&gt;contentType);</div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>              <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; header : data-&gt;additionalHeaders)</div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>              {</div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>                req-&gt;set(header.first, header.second);</div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>              }</div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>              req-&gt;body() = data-&gt;body;</div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>              req-&gt;prepare_payload();</div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>              data-&gt;req = req;</div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>              http::async_write(*(data-&gt;socket), *(data-&gt;req), [<span class="keyword">this</span>, data, promise](<span class="keyword">auto</span> ec, <span class="keyword">auto</span>)</div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>              {</div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>                if (ec)</div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>                {</div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>                  printError(ec.message());</div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>                  promise-&gt;set_exception(std::make_exception_ptr(std::runtime_error(<span class="stringliteral">&quot;Correct message wasn&#39;t received&quot;</span>)));</div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>                  return;</div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>                }</div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>                <span class="keyword">auto</span> buffer = std::make_shared&lt; boost::beast::flat_buffer &gt;();</div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>                <span class="keyword">auto</span> res = std::make_shared&lt; http::response&lt;http::string_body&gt; &gt;();</div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>                data-&gt;buffer = buffer;</div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>                data-&gt;res = res;</div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>                http::async_read(*(data-&gt;socket), *(data-&gt;buffer), *(data-&gt;res), [<span class="keyword">this</span>, promise, data](<span class="keyword">auto</span> ec, <span class="keyword">auto</span>)</div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>                {</div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>                  if (ec)</div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>                  {</div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>                    printError(ec.message());</div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>                    promise-&gt;set_exception(std::make_exception_ptr(std::runtime_error(<span class="stringliteral">&quot;Correct message wasn&#39;t received&quot;</span>)));</div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>                    return;</div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>                  }</div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>                  nlohmann::json response = nlohmann::json::parse(data-&gt;res-&gt;body());</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>                  <span class="keywordflow">if</span> (!response[<span class="stringliteral">&quot;ok&quot;</span>])</div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>                  {</div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>                    printError(response[<span class="stringliteral">&quot;description&quot;</span>].dump());</div>
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>                    promise-&gt;set_exception(std::make_exception_ptr(std::runtime_error(<span class="stringliteral">&quot;Correct message wasn&#39;t received&quot;</span>)));</div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>                    <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>                  }</div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>                  promise-&gt;set_value(response[<span class="stringliteral">&quot;result&quot;</span>].<span class="keyword">template</span> get&lt; T &gt;());</div>
+<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>                });</div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>              });</div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>            });</div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>          });</div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>        });</div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>      <span class="keywordflow">return</span> future;</div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>    }</div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>  };</div>
+</div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>}</div>
+</div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span> </div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html"><div class="ttname"><a href="classcppbot_1_1_bot.html">cppbot::Bot</a></div><div class="ttdoc">Main class of library.</div><div class="ttdef"><b>Definition</b> cppbot.hpp:43</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_a05e9dbd2559b0b35e61b3dc13947c9a3"><div class="ttname"><a href="classcppbot_1_1_bot.html#a05e9dbd2559b0b35e61b3dc13947c9a3">cppbot::Bot::sendMessage</a></div><div class="ttdeci">futureMessage sendMessage(size_t chatId, const std::string &amp;text, const types::Keyboard &amp;replyMarkup={})</div><div class="ttdoc">Async method for sending text messages.</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_a2951b2f0fdbd9abe84eddb87181eff30"><div class="ttname"><a href="classcppbot_1_1_bot.html#a2951b2f0fdbd9abe84eddb87181eff30">cppbot::Bot::getStateContext</a></div><div class="ttdeci">states::StateContext getStateContext(size_t chatId)</div><div class="ttdoc">Method for getting .</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_a32cb78a97aa67c1bcd9f7a920488b3ba"><div class="ttname"><a href="classcppbot_1_1_bot.html#a32cb78a97aa67c1bcd9f7a920488b3ba">cppbot::Bot::futureBool</a></div><div class="ttdeci">std::future&lt; bool &gt; futureBool</div><div class="ttdef"><b>Definition</b> cppbot.hpp:47</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_a406ae74c01296725c0b880253072e209"><div class="ttname"><a href="classcppbot_1_1_bot.html#a406ae74c01296725c0b880253072e209">cppbot::Bot::editMessageMedia</a></div><div class="ttdeci">futureMessage editMessageMedia(size_t chatId, size_t messageId, const types::InputMedia &amp;media, const types::InlineKeyboardMarkup &amp;replyMarkup={})</div><div class="ttdoc">Async method for editing message media.</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_a4d3d9cfe7a44c3891e6fccb40215b3e8"><div class="ttname"><a href="classcppbot_1_1_bot.html#a4d3d9cfe7a44c3891e6fccb40215b3e8">cppbot::Bot::sendPhoto</a></div><div class="ttdeci">futureMessage sendPhoto(size_t chatId, const types::InputFile &amp;photo, const std::string &amp;caption=&quot;&quot;, const types::InlineKeyboardMarkup &amp;replyMarkup={}, bool hasSpoiler=false)</div><div class="ttdoc">Async method for sending photos.</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_a56f8ed3e29bcfc2c0a887c9d113f176b"><div class="ttname"><a href="classcppbot_1_1_bot.html#a56f8ed3e29bcfc2c0a887c9d113f176b">cppbot::Bot::Bot</a></div><div class="ttdeci">Bot(const std::string &amp;token, std::shared_ptr&lt; handlers::MessageHandler &gt; mh, std::shared_ptr&lt; handlers::CallbackQueryHandler &gt; qh, std::shared_ptr&lt; states::Storage &gt; storage)</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_a57c858453c306757ff5bf905ed079a80"><div class="ttname"><a href="classcppbot_1_1_bot.html#a57c858453c306757ff5bf905ed079a80">cppbot::Bot::answerCallbackQuery</a></div><div class="ttdeci">futureBool answerCallbackQuery(const std::string &amp;queryId, const std::string &amp;text=&quot;&quot;, bool showAlert=false, const std::string &amp;url=&quot;&quot;, size_t cacheTime=0)</div><div class="ttdoc">Async method for answer callback queries.</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_a5c65b46a4e49b5f9b6ccde9e3995fa4e"><div class="ttname"><a href="classcppbot_1_1_bot.html#a5c65b46a4e49b5f9b6ccde9e3995fa4e">cppbot::Bot::editMessageText</a></div><div class="ttdeci">futureMessage editMessageText(size_t chatId, size_t messageId, const std::string &amp;text)</div><div class="ttdoc">Async method for editing message text.</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_a634b54b353f95cbd450afa9ef60560c9"><div class="ttname"><a href="classcppbot_1_1_bot.html#a634b54b353f95cbd450afa9ef60560c9">cppbot::Bot::sendAudio</a></div><div class="ttdeci">futureMessage sendAudio(size_t chatId, const types::InputFile &amp;audio, const std::string &amp;caption=&quot;&quot;, const types::InlineKeyboardMarkup &amp;replyMarkup={})</div><div class="ttdoc">Async method for sending audio.</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_a658b009989cfc115fe3e650c395bfbb5"><div class="ttname"><a href="classcppbot_1_1_bot.html#a658b009989cfc115fe3e650c395bfbb5">cppbot::Bot::getFile</a></div><div class="ttdeci">futureFile getFile(const std::string &amp;fileId)</div><div class="ttdoc">Async method for getting file info.</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_a685e94f1fee9d7338debc3c8691b5884"><div class="ttname"><a href="classcppbot_1_1_bot.html#a685e94f1fee9d7338debc3c8691b5884">cppbot::Bot::editMessageReplyMarkup</a></div><div class="ttdeci">futureMessage editMessageReplyMarkup(size_t chatId, size_t messageId, const types::InlineKeyboardMarkup &amp;replyMarkup)</div><div class="ttdoc">Async method for editing message keyboard.</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_a80f8fa7160c0ab83b53f5d28f17dc96e"><div class="ttname"><a href="classcppbot_1_1_bot.html#a80f8fa7160c0ab83b53f5d28f17dc96e">cppbot::Bot::sendVideo</a></div><div class="ttdeci">futureMessage sendVideo(size_t chatId, const types::InputFile &amp;video, const std::string &amp;caption=&quot;&quot;, const types::InlineKeyboardMarkup &amp;replyMarkup={}, bool hasSpoiler=false)</div><div class="ttdoc">Async method for sending videos.</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_a9839a2d37d5a0ad3767294a6d2613ed6"><div class="ttname"><a href="classcppbot_1_1_bot.html#a9839a2d37d5a0ad3767294a6d2613ed6">cppbot::Bot::deleteMessage</a></div><div class="ttdeci">futureBool deleteMessage(size_t chatId, size_t messageId)</div><div class="ttdoc">Async method for deleting messages.</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_ad1366770a332bcb26fbac08d645047c0"><div class="ttname"><a href="classcppbot_1_1_bot.html#ad1366770a332bcb26fbac08d645047c0">cppbot::Bot::editMessageCaption</a></div><div class="ttdeci">futureMessage editMessageCaption(size_t chatId, size_t messageId, const std::string &amp;caption, const types::InlineKeyboardMarkup &amp;replyMarkup={})</div><div class="ttdoc">Async method for editing message caption.</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_ad20eb8c64108bbfbe6d40b8a3244893c"><div class="ttname"><a href="classcppbot_1_1_bot.html#ad20eb8c64108bbfbe6d40b8a3244893c">cppbot::Bot::sendDocument</a></div><div class="ttdeci">futureMessage sendDocument(size_t chatId, const types::InputFile &amp;document, const std::string &amp;caption=&quot;&quot;, const types::InlineKeyboardMarkup &amp;replyMarkup={})</div><div class="ttdoc">Async method for sending documents.</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_ad9598c0c8faa7b293d9222fb8adae750"><div class="ttname"><a href="classcppbot_1_1_bot.html#ad9598c0c8faa7b293d9222fb8adae750">cppbot::Bot::startPolling</a></div><div class="ttdeci">void startPolling()</div><div class="ttdoc">Method for starting polling.</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_ae59a9d05da1095bf595fbee02cf8cd2a"><div class="ttname"><a href="classcppbot_1_1_bot.html#ae59a9d05da1095bf595fbee02cf8cd2a">cppbot::Bot::futureMessage</a></div><div class="ttdeci">std::future&lt; types::Message &gt; futureMessage</div><div class="ttdef"><b>Definition</b> cppbot.hpp:45</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_aeb162934ee2620aa7bb06ed45e27c430"><div class="ttname"><a href="classcppbot_1_1_bot.html#aeb162934ee2620aa7bb06ed45e27c430">cppbot::Bot::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdoc">Method for stopping polling.</div></div>
+<div class="ttc" id="aclasscppbot_1_1_bot_html_af0b5b4c4f4f8e49eef62f3d3ec3c66ab"><div class="ttname"><a href="classcppbot_1_1_bot.html#af0b5b4c4f4f8e49eef62f3d3ec3c66ab">cppbot::Bot::futureFile</a></div><div class="ttdeci">std::future&lt; types::File &gt; futureFile</div><div class="ttdef"><b>Definition</b> cppbot.hpp:46</div></div>
+<div class="ttc" id="aclassstates_1_1_state_context_html"><div class="ttname"><a href="classstates_1_1_state_context.html">states::StateContext</a></div><div class="ttdoc">Class allows client to interact with states of certain user flexibly.</div><div class="ttdef"><b>Definition</b> states.hpp:117</div></div>
+<div class="ttc" id="aclassstates_1_1_state_machine_html"><div class="ttname"><a href="classstates_1_1_state_machine.html">states::StateMachine</a></div><div class="ttdoc">Class for managing states.</div><div class="ttdef"><b>Definition</b> states.hpp:85</div></div>
+<div class="ttc" id="aclasstypes_1_1_input_file_html"><div class="ttname"><a href="classtypes_1_1_input_file.html">types::InputFile</a></div><div class="ttdoc">Class represents the contents of a file to be uploaded.</div><div class="ttdef"><b>Definition</b> types.hpp:201</div></div>
+<div class="ttc" id="aclasstypes_1_1_input_media_html"><div class="ttname"><a href="classtypes_1_1_input_media.html">types::InputMedia</a></div><div class="ttdoc">Class represents the content of a media message to be sent.</div><div class="ttdef"><b>Definition</b> types.hpp:229</div></div>
+<div class="ttc" id="ahandlers_8hpp_html"><div class="ttname"><a href="handlers_8hpp.html">handlers.hpp</a></div><div class="ttdoc">Heaader contains handler classes using in bot.</div></div>
+<div class="ttc" id="anamespacecppbot_html"><div class="ttname"><a href="namespacecppbot.html">cppbot</a></div><div class="ttdef"><b>Definition</b> cppbot.hpp:38</div></div>
+<div class="ttc" id="astates_8hpp_html"><div class="ttname"><a href="states_8hpp.html">states.hpp</a></div><div class="ttdoc">Header contains classes for managing states.</div></div>
+<div class="ttc" id="astructtypes_1_1_inline_keyboard_markup_html"><div class="ttname"><a href="structtypes_1_1_inline_keyboard_markup.html">types::InlineKeyboardMarkup</a></div><div class="ttdoc">Struct represents telegram inline keyboard.</div><div class="ttdef"><b>Definition</b> types.hpp:88</div></div>
+<div class="ttc" id="astructtypes_1_1_keyboard_html"><div class="ttname"><a href="structtypes_1_1_keyboard.html">types::Keyboard</a></div><div class="ttdoc">Base struct for telegram keyboards.</div><div class="ttdef"><b>Definition</b> types.hpp:62</div></div>
+<div class="ttc" id="atypes_8hpp_html"><div class="ttname"><a href="types_8hpp.html">types.hpp</a></div><div class="ttdoc">Header contains types represents different Telegram objects.</div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_790bd718bb2095364fc6030d16e40ba0.html">cppbot</a></li><li class="navelem"><a class="el" href="cppbot_8hpp.html">cppbot.hpp</a></li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -3,6 +3,8 @@
 
 // General definitions are in bot.hpp in app namespace.
 
+/// [ message_sending ]
+
 // Sync sending
 void echoSync(const types::Message& msg)
 {
@@ -19,6 +21,8 @@ void echoAsync(const types::Message& msg)
   app::bot.sendMessage(msg.chat.id, "Welcome, " + msg.from.firstName + '!');
   // ... (next code will execute without waiting for completion of sending)
 }
+
+/// [message_sending]
 
 int main()
 {
