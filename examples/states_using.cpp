@@ -3,6 +3,8 @@
 #include "bot.hpp"
 #include "forms.hpp"
 
+// General definitions are in bot.hpp in app namespace.
+
 // Called when entering command /start
 void startRegistration(const types::Message& msg)
 {

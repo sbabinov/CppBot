@@ -1,6 +1,8 @@
 #include "cppbot/types.hpp"
 #include "bot.hpp"
 
+// General definitions are in bot.hpp in app namespace.
+
 void openMainMenu(const types::Message& msg)
 {
   // Creating an inline keyboard with two buttons

@@ -1,6 +1,8 @@
 #include "cppbot/types.hpp"
 #include "bot.hpp"
 
+// General definitions are in bot.hpp in app namespace.
+
 // Sync sending
 void echoSync(const types::Message& msg)
 {
