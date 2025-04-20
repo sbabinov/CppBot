@@ -118,7 +118,7 @@ types::InputMediaPhoto newPhoto("path to a new photo");
 app::bot.editMessageMedia(chatId, messageId, newPhoto);
 ```
 
-## Editing messages with keyboards
+## Editing messages keyboards
 ```
 types::InlineKeyboardMarkup newMenu(...);
 app::bot.editMessageReplyMarkup(chatId, messageId, newMenu);
@@ -130,12 +130,12 @@ You can fetch files from ```Message``` object using certain fields (```photo```,
 void getFileInfo(const types::Message& msg)
 {
   types::Document document = msg.document;
-  auto file = app::bot.getFile(document.fileId)
+  auto file = app::bot.getFile(document.fileId);
   // now you can use file.filePath to download this file from https://api.telegram.org/file/bot<token>/<file_path>
 }
 ```
 
-## Using and processing callback querues
+## Using and processing callback queries
 Firstly, you need to create ```types::InlineKeyboardMarkup``` object and send it to user.
 ```
 types::InlineKeyboardMarkup menu({
