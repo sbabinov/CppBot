@@ -8,7 +8,7 @@ You can build this project using CMakeLists.txt. There are some options you can 
 
 > [!TIP]
 > To connect this library to your project, you can use following commands in <b>your</b> CMakeLists.txt:
-> ```
+> ```cmake
 > find_package(cppbot REQUIRED)
 > target_link_libraries(your-target PRIVATE cppbot)
 > ```
@@ -29,7 +29,7 @@ This is features that the current version of the bot supports:
 
 # How the bot works
 The bot uses three threads in its work which are initialized when the ```bot``` is starting. The bot's starting method looks something like this:
-```
+```c++
 void cppbot::Bot::startPolling()
 {
   isRunning_ = true;
@@ -44,7 +44,7 @@ void cppbot::Bot::startPolling()
 
 # Using some bot's methods
 Let the ```bot``` object be defined in some header in namespace ```app```.
-```
+```c++
 #include <memory>
 #include "cppbot/cppbot.hpp"
 #include "cppbot/states.hpp"
@@ -65,7 +65,7 @@ To start the bot, use method ```startPolling()```.
 types::Message class represents Telegram message.
 
 This is the example of function for sending text message:
-```
+```c++
 void echo(const types::Message& msg)
 {  
   app::bot.sendMessage(msg.chat.id, "Hello there!"); 
@@ -73,14 +73,14 @@ void echo(const types::Message& msg)
 ```
 
 To allow ```bot``` to process this handler, you need to do next before starting ```bot```:
-```
+```c++
 app::bot.messageHandler->addHandler("your command", echo);
 ```
 You will need to do this for every handler you added for messages.
 
 ## Sending files
 ```types::InputFile``` class is used for sending your files.
-```
+```c++
 types::InputFile photo("path to your file");
 app::bot.sendPhoto(chatId, photo, "caption");
 
@@ -90,7 +90,7 @@ app::bot.sendDocument(chatId, document, "caption");
 
 ## Sending messages with Telegram keyboards
 ```types::ReplyKeyboard``` and ```types::InlineKeyboardMarkup``` are used for creating keyboards to send with messages.
-```
+```c++
 types::ReplyKeyboard menu({
   {
     types::KeyboardButton("first button text"),
@@ -102,31 +102,31 @@ app::bot.sendMessage(chatId, "Message with keyboard", menu);
 To remove this type of keyboard from user's chat (```types::RepyKeyboardMarkup```) send message with ```ReplyKeyboardMarkup``` object.
 
 ## Deleting messages
-```
+```c++
 app::bot.deleteMessage(chatId, messageId);
 ```
 
 ## Editing text message
-```
+```c++
 app::bot.editMessageText(chatId, messageId, "new text");
 ```
 
 ## Editing messages with media
 ```types::InputMedia[Photo/Document/Audio/Video]``` is used for creating file to send as replacement.
-```
+```c++
 types::InputMediaPhoto newPhoto("path to a new photo");
 app::bot.editMessageMedia(chatId, messageId, newPhoto);
 ```
 
 ## Editing messages keyboards
-```
+```c++
 types::InlineKeyboardMarkup newMenu(...);
 app::bot.editMessageReplyMarkup(chatId, messageId, newMenu);
 ```
 
 ## Getting files info to download them
 You can fetch files from ```Message``` object using certain fields (```photo```, ```document```, ```audio```, ```video```).
-```
+```c++
 void getFileInfo(const types::Message& msg)
 {
   types::Document document = msg.document;
@@ -137,7 +137,7 @@ void getFileInfo(const types::Message& msg)
 
 ## Using and processing callback queries
 Firstly, you need to create ```types::InlineKeyboardMarkup``` object and send it to user.
-```
+```c++
 types::InlineKeyboardMarkup menu({
   {
     types::InlineKeyboardButton("first button", "first button callback data"),
@@ -148,7 +148,7 @@ app::bot.sendMessage(chatId, "some text", menu);
 ```
 
 Now you can handle clicks on these buttons. To do this, query handlers are using:
-```
+```c++
 void handleFirstButtonQuery(const types::CallbackQuery query)
 {
   app::bot.sendMessage(query.from.id, "you pressed first button");
@@ -156,7 +156,7 @@ void handleFirstButtonQuery(const types::CallbackQuery query)
 ```
 
 Also, don't forget to add this handler to ```CallbackQueryHandler``` before starting ```bot```:
-```
+```c++
 app::queryHandler->addHandler("first button callback data", handleFirstButtonQuery);
 ```
 
@@ -164,7 +164,7 @@ app::queryHandler->addHandler("first button callback data", handleFirstButtonQue
 The user in a certain state can trigger handlers only for this state.
 
 Firstly, you need to create your ```StatesForm```:
-```
+```c++
 namespace forms
 {
   struct RegistrationForm: public states::StatesForm
@@ -176,7 +176,7 @@ namespace forms
 ```
 
 Then you can use this states to set them to the user.
-```
+```c++
 // Called when entering command /start
 void startRegistration(const types::Message& msg)
 {
@@ -207,7 +207,7 @@ void processAge(const types::Message& msg, states::StateContext& state)
 ```
 
 Handlers adding looks something like this:
-```
+```c++
 app::messageHandler->addHandler("/start", startRegistration);
 
 // This handlers will be called only in appropriate states
