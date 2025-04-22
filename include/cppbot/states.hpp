@@ -7,8 +7,8 @@
   @warning The project is still in development
 */
 
-#ifndef STATE_HPP
-#define STATE_HPP
+#ifndef CPPBOT_STATES_HPP
+#define CPPBOT_STATES_HPP
 
 #include <string>
 #include <memory>

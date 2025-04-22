@@ -7,8 +7,8 @@
   @warning The project is still in development
 */
 
-#ifndef TYPES_HPP
-#define TYPES_HPP
+#ifndef CPPBOT_TYPES_HPP
+#define CPPBOT_TYPES_HPP
 
 #include <string>
 #include <vector>

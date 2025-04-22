@@ -7,8 +7,8 @@
   @warning The project is still in development
 */
 
-#ifndef HANDLERS_HPP
-#define HANDLERS_HPP
+#ifndef CPPBOT_HANDLERS_HPP
+#define CPPBOT_HANDLERS_HPP
 
 #include <functional>
 #include <string>

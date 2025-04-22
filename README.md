@@ -1,10 +1,10 @@
 # Info
 This is a simple C++ async library makes it easier to create Telegram bots.
 > [!NOTE]
-> More detailed documentation you can find at [GitHub Pages](https://sbabinov.github.io/CppBot/).
+> More detailed documentation you can find on [GitHub Pages](https://sbabinov.github.io/CppBot/).
 
 # Build
-You can build this project using CMakeLists.txt. There are some options you can change, see comments in this file.  
+The project can be built using CMakeLists.txt. There are some options you can change, see comments in this file.  
 
 > [!TIP]
 > To connect this library to your project, you can use following commands in <b>your</b> CMakeLists.txt:
@@ -14,12 +14,12 @@ You can build this project using CMakeLists.txt. There are some options you can 
 > ```
 
 # Supported features
-This is features that the current version of the bot supports:
+These are features that the current version of the bot supports:
 - [sending text messages](#sending-text-messages)
 - [sending files (photo, documents, audio, video)](#sending-files)
 - [sending messages with Telegram keyboards](#sending-messages-with-telegram-keyboards)
 - [deleting messages](#deleting-messages)
-- [editing text messages](#editing-text-message)
+- [editing text messages](#editing-text-messages)
 - [editing messages with media](#editing-messages-with-media)
 - [editing messages keyboards](#editing-messages-keyboards)
 - [getting files info to download them](#getting-files-info-to-download-them)
@@ -28,7 +28,7 @@ This is features that the current version of the bot supports:
 
 
 # How the bot works
-The bot uses three threads in its work which are initialized when the ```bot``` is starting. The bot's starting method looks something like this:
+The ```bot``` uses three threads in its work which are initialized when the ```bot``` is starting. Starting method looks something like this:
 ```c++
 void cppbot::Bot::startPolling()
 {
@@ -43,6 +43,9 @@ void cppbot::Bot::startPolling()
 - Main thread is processing all updates.
 
 # Using some bot's methods
+> [!IMPORTANT]
+> All bot's methods are async, so they return ```std::future``` as a result.
+
 Let the ```bot``` object be defined in some header in namespace ```app```.
 ```c++
 #include <memory>
@@ -62,7 +65,7 @@ You need to create shared pointers to ```MessageHander```, ```CallbackQueryHandl
 To start the bot, use method ```startPolling()```.
 
 ## Sending text messages
-types::Message class represents Telegram message.
+```types::Message``` class represents Telegram message.
 
 This is the example of function for sending text message:
 ```c++
@@ -72,11 +75,11 @@ void echo(const types::Message& msg)
 }
 ```
 
-To allow ```bot``` to process this handler, you need to do next before starting ```bot```:
+To allow the ```bot``` to process this handler, you need to perform the following steps before starting the ```bot```:
 ```c++
 app::bot.messageHandler->addHandler("your command", echo);
 ```
-You will need to do this for every handler you added for messages.
+You will need to do this for each handler you have added for messages.
 
 ## Sending files
 ```types::InputFile``` class is used for sending your files.
@@ -99,20 +102,20 @@ types::ReplyKeyboard menu({
 });
 app::bot.sendMessage(chatId, "Message with keyboard", menu);
 ```
-To remove this type of keyboard from user's chat (```types::RepyKeyboardMarkup```) send message with ```ReplyKeyboardMarkup``` object.
+To remove this type of keyboard (```types::RepyKeyboardMarkup```) from the user's chat, send message with ```ReplyKeyboardRemove``` object.
 
 ## Deleting messages
 ```c++
 app::bot.deleteMessage(chatId, messageId);
 ```
 
-## Editing text message
+## Editing text messages
 ```c++
 app::bot.editMessageText(chatId, messageId, "new text");
 ```
 
 ## Editing messages with media
-```types::InputMedia[Photo/Document/Audio/Video]``` is used for creating file to send as replacement.
+```types::InputMedia[Photo/Document/Audio/Video]``` is used for creating a file to send as a replacement.
 ```c++
 types::InputMediaPhoto newPhoto("path to a new photo");
 app::bot.editMessageMedia(chatId, messageId, newPhoto);
@@ -125,37 +128,41 @@ app::bot.editMessageReplyMarkup(chatId, messageId, newMenu);
 ```
 
 ## Getting files info to download them
-You can fetch files from ```Message``` object using certain fields (```photo```, ```document```, ```audio```, ```video```).
+You can fetch files from the ```Message``` object using certain fields (```photo```, ```document```, ```audio```, ```video```).
+
+> [!WARNING]
+> To get file info, you need to call ```std::future.get()``` method, so this is the thread-blocking operation.
+
 ```c++
 void getFileInfo(const types::Message& msg)
 {
   types::Document document = msg.document;
-  auto file = app::bot.getFile(document.fileId);
+  types::File file = app::bot.getFile(document.fileId).get();
   // now you can use file.filePath to download this file from https://api.telegram.org/file/bot<token>/<file_path>
 }
 ```
 
 ## Using and processing callback queries
-Firstly, you need to create ```types::InlineKeyboardMarkup``` object and send it to user.
+Firstly, you need to create ```types::InlineKeyboardMarkup``` object and send it to the user.
 ```c++
 types::InlineKeyboardMarkup menu({
   {
     types::InlineKeyboardButton("first button", "first button callback data"),
-    types::InlineKeyboardButton("second button", "second button callback data"),
+    types::InlineKeyboardButton("second button", "second button callback data")
   }
 })
 app::bot.sendMessage(chatId, "some text", menu);
 ```
 
-Now you can handle clicks on these buttons. To do this, query handlers are using:
+Now you can handle clicks on these buttons. Query handlers are used for this purpose:
 ```c++
-void handleFirstButtonQuery(const types::CallbackQuery query)
+void handleFirstButtonQuery(const types::CallbackQuery& query)
 {
-  app::bot.sendMessage(query.from.id, "you pressed first button");
+  app::bot.sendMessage(query.from.id, "you have pressed the first button");
 }
 ```
 
-Also, don't forget to add this handler to ```CallbackQueryHandler``` before starting ```bot```:
+Also, don't forget to add this handler to ```CallbackQueryHandler``` before starting the ```bot```:
 ```c++
 app::queryHandler->addHandler("first button callback data", handleFirstButtonQuery);
 ```
@@ -206,14 +213,13 @@ void processAge(const types::Message& msg, states::StateContext& state)
 }
 ```
 
-Handlers adding looks something like this:
+Adding handlers looks something like this:
 ```c++
 app::messageHandler->addHandler("/start", startRegistration);
 
 // This handlers will be called only in appropriate states
 app::messageHandler->addHandler(forms::registrationForm.username, processUsername);
 app::messageHandler->addHandler(forms::registrationForm.age, processAge);
-app::messageHandler->addHandler(forms::registrationForm.country, finishRegistration);
 ```
 
 
