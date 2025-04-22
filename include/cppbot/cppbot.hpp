@@ -9,8 +9,8 @@
   This file contains Bot class and all it's methods.
 */
 
-#ifndef BOT_HPP
-#define BOT_HPP
+#ifndef CPPBOT_HPP
+#define CPPBOT_HPP
 
 #include <iostream>
 #include <future>
@@ -246,8 +246,8 @@ namespace cppbot
       data->endpoint = endpoint;
       data->additionalHeaders = additionalHeaders;
       data->contentType = contentType;
-      data->resolver = std::make_shared<  asio::ip::tcp::resolver >(ioContext_);
-      data->socket = std::make_shared< asio::ssl::stream<asio::ip::tcp::socket> >(ioContext_, sslContext_);
+      data->resolver = std::make_shared< asio::ip::tcp::resolver >(ioContext_);
+      data->socket = std::make_shared< asio::ssl::stream< asio::ip::tcp::socket > >(ioContext_, sslContext_);
 
       auto promise = std::make_shared< std::promise< T > >();
       std::future< T > future = promise->get_future();
@@ -304,7 +304,7 @@ namespace cppbot
                   return;
                 }
                 auto buffer = std::make_shared< boost::beast::flat_buffer >();
-                auto res = std::make_shared< http::response<http::string_body> >();
+                auto res = std::make_shared< http::response< http::string_body > >();
                 data->buffer = buffer;
                 data->res = res;
                 http::async_read(*(data->socket), *(data->buffer), *(data->res), [this, promise, data](auto ec, auto)
